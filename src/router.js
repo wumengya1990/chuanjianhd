@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+// import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -10,8 +10,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'links',
+      component: () => import('./views/links.vue') 
     },
     {
       path: '/about',
@@ -22,6 +22,16 @@ export default new Router({
       path: '/activityContent',
       name: 'activityContent',
       component: () => import('./views/activityContent.vue')
+    },
+    {
+      path: '/student/sActivityList',
+      name: 'sActivityList',
+      component: () => import('./components/student/activityList.vue')
+    },
+    {
+      path: '/student/sActivityContent',
+      name: 'sActivityContent',
+      component: () => import('./components/student/activityContent.vue')
     }
   ]
 })
