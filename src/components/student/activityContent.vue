@@ -1,6 +1,6 @@
 <template>
     <div class="activityContent">
-        <van-tabs v-model="active">
+        <van-tabs v-model="active" swipeable animated>
             <van-tab title="活动须知">
                 <div class="activityAbout">
                     <h2>{{activity.title}}</h2>
@@ -32,7 +32,7 @@
                         <div class="worksBoxAbout">
                             <p><span>上传时间：</span></p>
                             <p><span>状态：</span></p>
-                            <van-button round type="danger"><van-icon name="delete" /></van-button>
+                            <van-button round type="danger" class="drop"><van-icon name="delete" /></van-button>
                         </div>
                    </div>
                </div>

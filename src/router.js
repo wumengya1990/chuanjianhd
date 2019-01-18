@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -12,11 +11,6 @@ export default new Router({
       path: '/',
       name: 'links',
       component: () => import('./views/links.vue') 
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('./views/About.vue')
     },
     {
       path: '/activityContent',
@@ -32,6 +26,26 @@ export default new Router({
       path: '/student/sActivityContent',
       name: 'sActivityContent',
       component: () => import('./components/student/activityContent.vue')
+    },
+    {
+      path: '/teacher/tActivityList',
+      name: 'tActivityList',
+      component: () => import('./components/teacher/activityList.vue')
+    },
+    {
+      path: '/teacher/tActivityContent',
+      name: 'tActivityContent',
+      component: () => import('./components/teacher/activityContent.vue')
+    },
+    {
+      path: '/schoolAdmin/scActivityList',             //活动列表
+      name: 'tActivityList',
+      component: () => import('./components/schoolAdmin/activityList.vue')
+    },
+    {
+      path: '/schoolAdmin/scActivityContent',          //活动内容
+      name: 'tActivityContent',
+      component: () => import('./components/schoolAdmin/activityContent.vue')
     }
   ]
 })
