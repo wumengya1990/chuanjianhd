@@ -54,7 +54,7 @@
               </van-list>
             </van-tab>
         <van-tab title="活动统计">
-             <div id="echart" ref="mychart"></div>
+            
             <!-- <div class="statisticsList">
                 <ul>
                     <li v-for="statistics in myClassstatStatistics">
@@ -74,12 +74,6 @@
 </template>
 
 <script>
-let echarts = require('echarts/lib/echarts');
-require('echarts/lib/chart/bar');
-require('echarts/lib/component/tooltip');
-require('echarts/lib/component/toolbox');
-require('echarts/lib/component/legend');
-require('echarts/lib/component/markLine');
 
 export default {
     name:'activityContent',

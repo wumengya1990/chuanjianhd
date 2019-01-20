@@ -64,3 +64,10 @@ body,html{height:100%}
 .statisticsList ul li h3 span{ color:#f00; font-size: 18px; padding: 0 10px;}
 .statisticsList ul li div em{ color: #999999; display: block;}
 .statisticsList ul li div p span{ display: inline-block; background: #64bad9; color: #FFFFFF; margin: 10px 10px 0 0;  padding: 3px 10px; border-radius:2px;}
+
+
+/* 创建活动 */
+.creatActivityM{ position: absolute; left: 0; top: 0; right: 0; bottom: 0; margin: auto; overflow: hidden; overflow-y: auto;}
+.creatActivityM ul li{ border-bottom:1px solid #eaeaea; padding: 10px 0;}
+.creatActivityM ul li em{ color: #666666;  font-size: 0.9em; padding: 0 10px;}
+.creatActivityM .bts{ padding:10px;}

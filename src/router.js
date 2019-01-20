@@ -46,6 +46,27 @@ export default new Router({
       path: '/schoolAdmin/scActivityContent',          //活动内容
       name: 'tActivityContent',
       component: () => import('./components/schoolAdmin/activityContent.vue')
+    },
+    {
+      path: '/areaAdmin/scActivityList',             //活动列表
+      name: 'scActivityList',
+      component: () => import('./components/areaAdmin/activityList.vue')
+    },
+    {
+      path: '/areaAdmin/scActivityContent',          //活动内容
+      name: 'scActivityContent',
+      component: () => import('./components/areaAdmin/activityContent.vue')
+    },
+    {
+      path: '/areaAdmin/createActivity',          //活动内容
+      name: 'createActivity',
+      component: () => import('./components/areaAdmin/createActivity.vue')
+    },
+    {
+      path: '/areaAdmin/charts',          //活动内容
+      name: 'charts',
+      component: () => import('./components/areaAdmin/charts.vue')
     }
+    
   ]
 })
