@@ -51,7 +51,6 @@
             :show-toolbar="true"
             v-model="currentDate"
             type="date"
-            @change="onChangeB"
             @confirm="onConfirmB"
             @cancel="onCancelB"
             />
@@ -65,7 +64,6 @@
             :show-toolbar="true"
             v-model="currentDate"
             type="date"
-            @change="onChangeE"
             @confirm="onConfirmE"
             @cancel="onCancelE"
             />
@@ -85,38 +83,63 @@ data(){
         endTimeShow:false,
         formList:{
             useid:201801,
-            beiginTime:{},
-            endTime:'',
+            beiginTime:this.getBeginTime(),
+            endTime:this.getBeginTime(),
             schoolWorkNum:0,
             classWorkNum:0,
             hdnr:'',
             hdyq:'',
             hdbz:''
-        }
+        },
+        beginDate: new Date().toLocaleDateString(),
+        endDate: new Date(
+            (new Date() / 1000 + 86400) * 1000
+        ).toLocaleDateString(),
     }
 },
 methods:{
     submitForm:function(){
         console.log(123);
     },
-    onChangeB:function(value,index){
-        this.formList.beiginTime = value
-        console.log(value)
-    },
-    onConfirmB:function(){
-        this.beiginTimeShow=false
-    },
     onCancelB:function(){
         this.beiginTimeShow=false
     },
-    onChangeE:function(value){
-        this.formList.endTime = value
-    },
-    onConfirmE:function(){
-        this.endTimeShow=false
-    },
     onCancelE:function(){
          this.endTimeShow=false
+    },
+    //确认开始时间并查询课时定位
+    onConfirmB: function(value) {
+        console.log(value);
+        this.formList.selBeginDate = value;
+        if (this.formList.selBeginDate > this.formList.endTime) {
+            this.$vnotify("开始日期不能大于结束日期");
+            return false;
+        }
+        this.beginDate = value.toLocaleDateString();
+        this.beiginTimeShow = !this.beiginTimeShow;
+        this.getOrientation(true);
+    },
+    //确认结束时间并查询课时定位
+    onConfirmE: function(value) {
+        this.formList.selEndDate = value;
+        if (this.formList.selBeginDate > this.formList.endTime) {
+            this.$vnotify("开始日期不能大于结束日期");
+            return false;
+        }
+        this.endDate = value.toLocaleDateString();
+        console.log(this.endDate);
+        this.bottomShow1 = !this.bottomShow1;
+        this.getOrientation(true);
+    },
+    getBeginTime:function(){
+        let date = new Date();
+        var myDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
+        return myDate;
+    },
+    getEndTime:function(){
+        let date = new Date();
+        var myDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + (date.getDate()+1)
+        return myDate;
     }
 }
 }
