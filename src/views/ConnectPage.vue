@@ -44,20 +44,25 @@ export default {
                 let urlp = "/api/musicRankingsDetails";
                 that.$api.get(urlp, dataList, res => {
                     console.log(res);
-                    // if (res.status == "success") {
-                    //     console.log("授权登录成功");
-                    //     that.$store.commit("saveToken", res.token); //保存 token
-                    //     that.$store.commit("saveRole", res.role); //保存 role
-                    //     if (res.role < 4) {
-                    //         that.$router.push({ path: "/myLesson"});
-                    //     } else {
-                    //         that.$router.push({ path: "/shareCounty" });
-                    //     }
-                    // } else {
-                    //     console.log("授权登录失败");
-                    //     that.$vnotify(res.errorMessage);
-                    //     that.$router.push({ path: "/errorPage" });
-                    // }
+                    if (res.status == "success") {
+                        console.log("授权登录成功");
+                        // that.$store.commit("saveToken", res.token); //保存 token
+                        // that.$store.commit("saveRole", res.role); //保存 role
+                        if(res.result.length != 1){
+                            that.$router.push({ path: "/student/sActivityList",query:{uid:res.result}});
+                        }else{
+                            
+                        }
+                        // if (res.role < 4) {
+                        //     that.$router.push({ path: "/myLesson"});
+                        // } else {
+                        //     that.$router.push({ path: "/shareCounty" });
+                        // }
+                    } else {
+                        console.log("授权登录失败");
+                        that.$vnotify(res.errorMessage);
+                        that.$router.push({ path: "/errorPage" });
+                    }
                 });
             } else {
                 that.$vnotify("参数传递不完整");

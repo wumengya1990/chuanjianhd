@@ -1,5 +1,5 @@
 <template>
-    <div class="activityContent">
+    <div class="activityContent mianScroll" ref="winHeight">
         <van-tabs v-model="active" swipeable animated>
             <van-tab title="活动须知">
                 <div class="activityAbout">
@@ -19,13 +19,10 @@
                 </div>
             </van-tab>
             <van-tab title="互动参与">
-                <van-list
-                    v-model="loading"
-                    :finished="finished"
-                    finished-text="没有更多了"
-                    @load="onLoad"
-                >
-               <div class="myActivityList">
+                <div class="myActivityList" :style="{height:boxheight}">
+                 <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
+                     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList" >
+              
                    <div class="worksBox" v-for="zp in studentworks" >
                        <div class="worksBoxVideo">
                        <!-- <video-player class="video-player vjs-custom-skin"
@@ -49,9 +46,11 @@
                             <van-button v-else size="small" type="primary" @click="recommend()">推荐</van-button>
                         </div>
                    </div>
-               </div>
 
-              </van-list>
+
+                </van-list>
+              </van-pull-refresh>
+              </div>
             </van-tab>
         <van-tab title="活动统计">
              <div id="echart" ref="mychart"></div>
@@ -86,8 +85,10 @@ export default {
     data(){
         return{
             active: 0,                      //默认TBA标签选中
-            loading: false,
-            finished: false,
+             isLoading: false, //列表数据加载中
+            isRefresh: false, //正在刷新数据
+            loading: false, //列表加载数据
+            finished: false, //列表中是否加载了所有数据
             activity:{                      //活动介绍
                 title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
                 activityLevel:3,
@@ -124,24 +125,78 @@ export default {
                     uploadTime:"2019-01-18",
                     zpstate:false
                 }
-            ]
+            ],
+            boxheight:''
         }
     },
+    mounted(){
+        this.loadxiangqing();
+        this.setheight();
+    },
     methods:{
-        onLoad(){
-        // 异步更新数据
-        setTimeout(() => {
-            for (let i = 0; i < 10; i++) {
-            this.studentworks.push(this.studentworks.length + 1);
+        setheight:function(){
+            let newheight= this.$refs.winHeight.offsetHeight;
+            console.log(newheight)
+            this.boxheight = newheight-44+"px";
+        },
+        loadxiangqing:function(){
+            let that = this;
+             let url = "/api/Plan/GetMyPlanList";
+             let param = { pageindex: that.pageIndex, val: that.searchData };
+             that.$api.get(url, param, res => {
+                let resCount = res.length;
+                console.log("加载详情:" + resCount);
+                // console.log(res);
+            });
+        },
+        onRefresh:function(){
+         this.loading = false;
+        this.loadList(true);
+    },
+    //加载活动列表(isInit:是否清空后重新加载数据)
+        loadList: function(isInit) {
+            let that = this;
+            //判断是否正在加载数据
+            if (that.isLoading == false) {
+                that.isLoading = true;
+            } else {
+                return false;
             }
-            // 加载状态结束
-            this.loading = false;
-
-            // 数据全部加载完成
-            if (this.studentworks.length >= 10) {
-            this.finished = true;
+            if (isInit == true) {
+                that.finished = false;
+                that.pageIndex = 1;
+                that.myPlanList = [];
             }
-        }, 500);
+            let url = "/api/Plan/GetMyPlanList";
+            let param = { pageindex: that.pageIndex, val: that.searchData };            //获取传参
+            let mes = that.receive;
+            if (that.$isNull(mes) == false) {
+                for (const key in mes) {
+                    if (mes[key] == null || mes[key] == "") {
+                        continue;
+                    } else if (mes.hasOwnProperty(key)) {
+                        param[key] = mes[key];
+                    }
+                }
+            }
+            that.$api.get(url, param, res => {
+                let resCount = res.length;
+                console.log("成功加载备课:" + resCount);
+                // console.log(res);
+                if (isInit == true) {
+                    that.myPlanList = res;
+                } else {
+                    that.myPlanList = that.myPlanList.concat(res);
+                }
+                that.pageIndex++;
+                // 加载状态结束
+                that.loading = false;
+                that.isLoading = false;
+                that.isRefresh = false;
+                if (resCount < 10) {
+                    that.finished = true;
+                }
+            });
         }
     }
 }

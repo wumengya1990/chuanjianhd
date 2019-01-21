@@ -91,7 +91,20 @@ export default {
             }
         }
     },
+    mounted(){
+        this.loadxiangqing();
+    },
     methods:{
+        loadxiangqing:function(){
+             let that = this;
+             let url = "/api/Plan/GetMyPlanList";
+             let param = { pageindex: that.pageIndex, val: that.searchData };
+             that.$api.get(url, param, res => {
+                let resCount = res.length;
+                console.log("加载详情:" + resCount);
+                // console.log(res);
+            });
+        }
         // onLoad(){
         // // 异步更新数据
         // setTimeout(() => {
