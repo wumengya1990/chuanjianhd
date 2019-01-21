@@ -1,30 +1,31 @@
 <template>
     <div class="activityList bgmain mianScroll">
-        <div class="activityListM">
-        <div class="activity" v-for="act in activityList" :key="act.activityID">
-            <div class="activityLImg" >
-                <img :src="act.hdImg">
+        <!-- <div class="activityListM"> -->
+        <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
+            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList">
+            <div class="activity" v-for="act in activityList" :key="act.activityID">
+                <div class="activityLImg" >
+                    <img :src="act.hdImg">
+                </div>
+                <div class="activityContent" @click="intoDetails(act.activityID)">
+                    <h3>
+                        {{act.title}}
+                        <van-tag v-if="act.activityLevel==1" color="#07c160">班级</van-tag>
+                        <van-tag v-else-if="act.activityLevel==2" color="#0bcbdc">区级</van-tag>
+                        <van-tag v-else color="#1989fa">校级</van-tag>
+                    </h3>
+                    <ul>
+                        <li><em>活动日期：</em><div><p>{{act.activityStartDate}}~{{act.activityEndDate}}</p></div></li>
+                        <li><em>据活动结束时间：</em><div><p>天</p></div></li>
+                        <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
+                    </ul>
+                </div>
             </div>
-            <div class="activityContent" @click="intoDetails(act.activityID)">
-                <h3>
-                    {{act.title}}
-                    <van-tag v-if="act.activityLevel==1" color="#07c160">班级</van-tag>
-                    <van-tag v-else-if="act.activityLevel==2" color="#0bcbdc">区级</van-tag>
-                    <van-tag v-else color="#1989fa">校级</van-tag>
-                </h3>
-                <ul>
-                    <li><em>活动日期：</em><div><p>{{act.activityStartDate}}~{{act.activityEndDate}}</p></div></li>
-                    <li><em>据活动结束时间：</em><div><p>天</p></div></li>
-                    <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
-                </ul>
-            </div>
-        </div>
-        </div>
+            </van-list>
+        </van-pull-refresh>
+        <!-- </div> -->
 
-        <!-- <van-popup v-model="peochoshow" position="bottom">
-            <h3 style="height:50px; line-height:50px; text-align:center;">请选择参加本次活动的学生</h3>
-           <van-button size="large" @click="loadList(stu.studentID)" v-for="stu in studentList">{{stu.studentName}}</van-button>
-        </van-popup> -->
+
        
     </div>
 </template>
@@ -35,11 +36,10 @@ export default {
 name:'activityList',
 data(){
     return{
-        peochoshow:false,
-        studentList:[
-            {studentID:20181001,studentName:"张洋"},
-            {studentID:20181002,studentName:"张扬"},
-        ],
+        isLoading: false, //列表数据加载中
+        isRefresh: false, //正在刷新数据
+        loading: false, //列表加载数据
+        finished: false, //列表中是否加载了所有数据
         activityList:[
             { 
                 activityID:20190101,
@@ -62,20 +62,63 @@ data(){
         ]
     }
 },
-mounted(){
-    // this.loadstuList()
-},
+mounted(){},
 methods:{
     intoDetails:function(artid){                //进入到活
         var _this = this;
-        _this.$router.push({path:'/schoolAdmin/scActivityContent'});
+        // _this.$router.push({path:'/areaAdmin/scActivityContent',query:{activityID:artid}});
+        _this.$router.push({path:'/areaAdmin/arActivityContent'});
     },
-    loadstuList:function(){
-        this.peochoshow = true;
+    onRefresh:function(){
+         this.loading = false;
+        this.loadList(true);
     },
-    loadList:function(stuid){
-        this.peochoshow = false;
-    }
+    //加载活动列表(isInit:是否清空后重新加载数据)
+        loadList: function(isInit) {
+            let that = this;
+            //判断是否正在加载数据
+            if (that.isLoading == false) {
+                that.isLoading = true;
+            } else {
+                return false;
+            }
+            if (isInit == true) {
+                that.finished = false;
+                that.pageIndex = 1;
+                that.myPlanList = [];
+            }
+            let url = "/api/Plan/GetMyPlanList";
+            let param = { pageindex: that.pageIndex, val: that.searchData };            //获取传参
+            let mes = that.receive;
+            if (that.$isNull(mes) == false) {
+                for (const key in mes) {
+                    if (mes[key] == null || mes[key] == "") {
+                        continue;
+                    } else if (mes.hasOwnProperty(key)) {
+                        param[key] = mes[key];
+                    }
+                }
+            }
+            that.$api.get(url, param, res => {
+                let resCount = res.length;
+                console.log("成功加载备课:" + resCount);
+                // console.log(res);
+                if (isInit == true) {
+                    that.myPlanList = res;
+                } else {
+                    that.myPlanList = that.myPlanList.concat(res);
+                }
+                that.pageIndex++;
+                // 加载状态结束
+                that.loading = false;
+                that.isLoading = false;
+                that.isRefresh = false;
+                if (resCount < 10) {
+                    that.finished = true;
+                }
+            });
+        }
+    
 }
 }
 </script>

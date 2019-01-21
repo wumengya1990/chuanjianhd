@@ -1,14 +1,19 @@
 module.exports = {
-    baseUrl: '/',
     outputDir:'dist',
     lintOnSave:false,
     devServer: {
         open: true,
-        host: '192.168.1.100',
+        host: '192.168.0.147',
         port: 8080,
         https: false,
         hotOnly: false,
-        proxy: null
+        proxy:{
+            '/api':{
+                target:'https://api.apiopen.top',
+                changeOrigin:true,
+                ws:true,
+                pathRewrite:{'^/api':''}
+            }
+        }
     }
-
 }

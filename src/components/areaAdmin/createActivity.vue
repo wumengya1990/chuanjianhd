@@ -3,31 +3,31 @@
         <div class="creatActivityM">
             <ul>
                 <li>
-                    <em>活动名称</em>
-                    <div><van-field v-model="formList.useid" placeholder="请输入用户名" /></div>
+                    <em>活动名称<i>*</i></em>
+                    <div><van-field v-model="formList.title" placeholder="请输入活动名称" /></div>
                 </li>
                 <li>
-                    <em>活动开始时间</em>
-                    <div><van-field v-model="formList.beiginTime" placeholder="请输入活动开始时间" icon="clock-o" @click="beiginTimeShow=true" /></div>
+                    <em>活动开始时间<i>*</i></em>
+                    <div><van-field v-model="beginDate" placeholder="请输入活动开始时间" icon="clock-o" @click="beiginTimeShow=true" /></div>
                 </li>
                 <li>
-                    <em>活动截止时间</em>
-                    <div><van-field v-model="formList.endTime" placeholder="请输入活动截止时间" icon="clock-o" @click="endTimeShow=true" /></div>
+                    <em>活动截止时间<i>*</i></em>
+                    <div><van-field v-model="endDate" placeholder="请输入活动截止时间" icon="clock-o" @click="endTimeShow=true" /></div>
                 </li>
                 <li>
-                    <em>输入各学校推荐作品数量</em>
-                    <div><van-field v-model="formList.schoolWorkNum" placeholder="请输入用户名" /></div>
+                    <em>输入各学校推荐作品数量<i>*</i></em>
+                    <div><van-stepper v-model="formList.schoolWorkNum" style="margin:5px 10px 0" /></div>
                 </li>
                 <li>
-                    <em>输入各班级推荐作品数量</em>
-                    <div><van-field v-model="formList.classWorkNum" placeholder="请输入用户名" /></div>
+                    <em>输入各班级推荐作品数量<i>*</i></em>
+                    <div><van-stepper v-model="formList.classWorkNum" style="margin:5px 10px 0" /></div>
                 </li>
                 <li>
-                    <em>输入活动内容</em>
+                    <em>输入活动内容<i>*</i></em>
                     <div> <van-field v-model="formList.hdnr" type="textarea" placeholder="请输入活动内容" rows="1" autosize /></div>
                 </li>
                 <li>
-                    <em>输入活动要求</em>
+                    <em>输入活动要求<i>*</i></em>
                     <div><van-field v-model="formList.hdyq" placeholder="请输入活动要求" /></div>
                 </li>
                 <li>
@@ -36,11 +36,32 @@
                 </li>
                 <li>
                     <em>封面图</em>
-                    <div><van-field v-model="formList.useid" placeholder="请输入用户名" /></div>
+                    <div>
+                        <el-upload
+                                class="upload-demo"
+                                action="/api/Plan/UploadPlanFile"
+                                :loadingTxt="loadTxt"
+                                :http-request="pmUpload"
+                                :on-success="handleSuccess"
+                                :on-error="handleError"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :on-change="pmfileChange"
+                                :before-upload="beforeUpload"
+                                :file-list="pmfiles"
+                                list-type="picture"
+                                style="margin:5px 10px 0"
+                                accept=".jpg, .jpeg, .png, .gif, .bmp, .JPG, .JPEG, .PBG, .GIF, .BMP"
+                            >
+                                <el-button size="mini" type="primary">上传素材</el-button>
+                                <div slot="tip" class="el-upload__tip">只能上传图片文件，且不超过10MB</div>
+                            </el-upload>
+                        
+                    </div>
                 </li>
             </ul>
             <div class="bts">
-                <van-button type="primary" size="large" @click="submitForm()">大号按钮</van-button>
+                <van-button type="primary" size="large" @click="submitForm()">创建活动</van-button>
             </div>
         </div>
 
@@ -49,10 +70,11 @@
             <van-datetime-picker
             title="请选择开始时间"
             :show-toolbar="true"
-            v-model="currentDate"
+            v-model="formList.selBeginDate"
             type="date"
-            @confirm="onConfirmB"
-            @cancel="onCancelB"
+            :min-date="minDate"
+            @confirm="confirmBegin"
+            @cancel="beiginTimeShow =! beiginTimeShow"
             />
 
         </van-popup>
@@ -62,10 +84,11 @@
             <van-datetime-picker
             title="请选择结束时间"
             :show-toolbar="true"
-            v-model="currentDate"
+            v-model="formList.selEndDate"
             type="date"
-            @confirm="onConfirmE"
-            @cancel="onCancelE"
+            :min-date="minDate1"
+            @confirm="confirmEnd"
+            @cancel="endTimeShow =! endTimeShow"
             />
 
         </van-popup>
@@ -78,19 +101,26 @@ export default {
 name:'creatActivity',
 data(){
     return{
-        currentDate: new Date(),
         beiginTimeShow:false,
         endTimeShow:false,
+        loadTxt: "文件上传中....",
+        pmfiles:[],
         formList:{
-            useid:201801,
-            beiginTime:this.getBeginTime(),
-            endTime:this.getBeginTime(),
+            title:'',
+            selBeginDate:this.getBeginTime(),
+            selEndDate:this.getEndTime(),
             schoolWorkNum:0,
             classWorkNum:0,
             hdnr:'',
             hdyq:'',
-            hdbz:''
+            hdbz:'',
+            PlanMatList:[]
         },
+        //时间内容
+        minDate: new Date(),
+        minDate1:new Date(
+            (new Date() / 1000 + 86400) * 1000
+        ),
         beginDate: new Date().toLocaleDateString(),
         endDate: new Date(
             (new Date() / 1000 + 86400) * 1000
@@ -98,38 +128,113 @@ data(){
     }
 },
 methods:{
-    submitForm:function(){
-        console.log(123);
-    },
-    onCancelB:function(){
-        this.beiginTimeShow=false
-    },
-    onCancelE:function(){
-         this.endTimeShow=false
-    },
+         /////开始附件上传相关功能
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
+        ///on-change钩子，文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用。
+        pdfileChange: function(file, fileList) {
+            this.pdfiles = fileList;
+        },
+        ///文件上传之前的验证操作
+        beforeUpload: function(file) {
+            const isJPG = file.type === "image/jpeg";
+            const isGIF = file.type === "image/gif";
+            const isPNG = file.type === "image/png";
+            const isBMP = file.type === "image/bmp";
+            const isLt2M = file.size / 1024 / 1024 < 10;
+
+            if (!isJPG && !isGIF && !isPNG && !isBMP) {
+                this.$vnotify("上传图片必须是JPG/GIF/PNG/BMP 格式");
+            }
+            if (!isLt2M) {
+                vmstu.$vnotify("上传Excel大小不能超过10MB");
+            }
+
+            let isPass = (isJPG || isGIF || isPNG || isBMP) && isLt2M;
+            if (isPass) {
+                this.importLoading = this.$loading({
+                    lock: true,
+                    text: "正在上传图片....."
+                });
+            }
+            return isPass;
+        },
+        //axios自定义上传(教案设计)
+        pdUpload(obj) {
+            let the = this;
+            let fOrder = the.teachPlan.PlanFileList.length + 1;
+            let param = { files: obj.file, fileOrder: fOrder };
+            the.$api.uploadFile("/api/Plan/UploadPlanFile", param, data => {
+                the.importLoading.close();
+                if (!data.success) {
+                    the.$vnotify("图片上传失败");
+                } else {
+                    the.teachPlan.PlanFileList.push(data.planfile);
+                }
+            });
+        },
+        ///on-change钩子，文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用。
+        pmfileChange: function(file, fileList) {
+            this.pmfiles = fileList;
+        },
+        //axios自定义上传(课堂素材)
+        pmUpload(obj) {
+            let the = this;
+            let fOrder = the.formList.PlanMatList.length + 1;
+            let param = { files: obj.file, fileOrder: fOrder };
+            the.$api.uploadFile("/api/Plan/UploadPlanFile", param, data => {
+                the.importLoading.close();
+                if (!data.success) {
+                    the.$vnotify("图片上传失败");
+                } else {
+                    the.teachPlan.PlanMatList.push(data.planfile);
+                }
+            });
+        },
+        ///on-error钩子，上传失败时的钩子
+        handleError: function(err, file, fileList) {
+            console.log(err);
+            this.importLoading.close();
+        },
+        ///文件上传成功时的钩子
+        handleSuccess: function(response, file, fileList) {
+            this.importLoading.close();
+            if (!response.success) {
+                this.$vnotify("图片上传失败");
+            } else {
+                this.teachPlan.PlanFileList.push(file);
+            }
+        },
+    
     //确认开始时间并查询课时定位
-    onConfirmB: function(value) {
+    confirmBegin: function(value) {
         console.log(value);
         this.formList.selBeginDate = value;
-        if (this.formList.selBeginDate > this.formList.endTime) {
+        if (this.formList.selBeginDate > this.formList.selEndDate) {
             this.$vnotify("开始日期不能大于结束日期");
             return false;
         }
         this.beginDate = value.toLocaleDateString();
         this.beiginTimeShow = !this.beiginTimeShow;
-        this.getOrientation(true);
+        //this.getOrientation(true);
     },
     //确认结束时间并查询课时定位
-    onConfirmE: function(value) {
+    confirmEnd: function(value) {
+        typeof(value);
         this.formList.selEndDate = value;
-        if (this.formList.selBeginDate > this.formList.endTime) {
+        if (this.formList.selBeginDate > this.formList.selEndDate) {
             this.$vnotify("开始日期不能大于结束日期");
             return false;
         }
         this.endDate = value.toLocaleDateString();
         console.log(this.endDate);
-        this.bottomShow1 = !this.bottomShow1;
-        this.getOrientation(true);
+        this.endTimeShow = !this.endTimeShow;
+       // this.getOrientation(true);
     },
     getBeginTime:function(){
         let date = new Date();
@@ -140,6 +245,52 @@ methods:{
         let date = new Date();
         var myDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + (date.getDate()+1)
         return myDate;
+    },
+    //保存教案信息
+    submitForm: function() {
+        let the = this;
+        let errMsg = "";
+        if (the.formList.title == "") {
+            errMsg += "请输入活动名称";
+        }
+        if (the.formList.selBeginDate == "") {
+            errMsg += "请输入活动开始日期";
+        }
+        if (the.formList.selEndDate == "") {
+            errMsg += "请输入活动结束日期";
+        }
+        if (the.formList.schoolWorkNum == "") {
+            errMsg += "请输入学校推荐作品";
+        }
+        if (the.formList.classWorkNum == "") {
+            errMsg += "请输入班级推荐作品";
+        }
+        if (the.formList.hdnr == "") {
+            errMsg += "请输入活动内容";
+        }
+        if (the.formList.hdyq == "") {
+            errMsg += "请输入活动要求";
+        }
+        if (errMsg != "") {
+            this.$message({
+                dangerouslyUseHTMLString: true,
+                showClose: true,
+                type: "warning",
+                duration: 5000,
+                message: errMsg
+            });
+            return false;
+        }
+        const vd = the.$vloading("保存中...");
+        let url = "/api/Plan/SaveTeachPlan";
+        the.$api.post(url, the.formList, data => {
+            vd.clear();
+            console.log(data.msg);
+            the.$vnotify(data.msg);
+            if (data.success) {
+                this.$router.push({path:'/areaAdmin/arActivityList'});
+            }
+        });
     }
 }
 }

@@ -6,9 +6,9 @@
         <router-link to="/teacher/tActivityContent">教师活动详情</router-link>
         <router-link to="/schoolAdmin/scActivityList">校管活动列表</router-link>
         <router-link to="/schoolAdmin/scActivityContent">校管活动详情</router-link>
-        <router-link to="/areaAdmin/scActivityList">区管活动列表</router-link>
-        <router-link to="/areaAdmin/scActivityContent">区管活动详情</router-link>
-        <router-link to="/areaAdmin/createActivity">区管活动详情</router-link>
+        <router-link to="/areaAdmin/arActivityList">区管活动列表</router-link>
+        <router-link to="/areaAdmin/arActivityContent">区管活动详情</router-link>
+        <router-link to="/areaAdmin/createActivity">区管创建活动</router-link>
     </div>
 </template>
 

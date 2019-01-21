@@ -122,7 +122,20 @@ export default {
             ]
         }
     },
+    mounted(){
+        this.loadxiangqing()
+    },
     methods:{
+        loadxiangqing:function(){
+             let that = this;
+             let url = "/api/Plan/GetMyPlanList";
+             let param = { pageindex: that.pageIndex, val: that.searchData };
+             that.$api.get(url, param, res => {
+                let resCount = res.length;
+                console.log("加载详情:" + resCount);
+                // console.log(res);
+            });
+        },
         onLoad(){
         // 异步更新数据
         setTimeout(() => {
@@ -143,5 +156,5 @@ export default {
 </script>
 
 <style>
-
+/* .van-tabs .van-tab__pane{overflow: hidden; overflow-y: auto; position: absolute; left: 0; top: 0; right: 0; bottom: 0;} */
 </style>
