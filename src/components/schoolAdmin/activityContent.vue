@@ -135,7 +135,7 @@ export default {
     },
     methods:{
         setheight:function(){
-            let newheight= this.$refs.winHeight.offsetHeight;
+            //let newheight= this.$refs.winHeight.offsetHeight;
             console.log(newheight)
             this.boxheight = newheight-44+"px";
         },
