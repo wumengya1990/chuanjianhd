@@ -31,7 +31,7 @@ export default {
             //     dataList.source = mySource;
             // }
             // if (!that.$isNull(myuId)) {
-                dataList.type = 1;
+                dataList.uId = 101083;
             // }
             // if (!that.$isNull(mytoken)) {
             //     dataList.token = mytoken;
@@ -41,17 +41,22 @@ export default {
             // console.log("开始授权登录");
 
             if (dataList != null) {
-                let urlp = "/api/musicRankingsDetails";
+                let urlp = "/api/login";
                 that.$api.get(urlp, dataList, res => {
                     console.log(res);
                     if (res.status == "success") {
                         console.log("授权登录成功");
-                        // that.$store.commit("saveToken", res.token); //保存 token
-                        // that.$store.commit("saveRole", res.role); //保存 role
-                        if(res.result.length != 1){
-                            that.$router.push({ path: "/student/sActivityList",query:{uid:res.result}});
+                        that.$store.commit("saveToken", res.result.token); //保存 token
+                        // that.$store.commit("saveRole", res.result.role); //保存 role
+                        // that.$store.commit("saveUid", res.result.userId);
+                        if(res.result.role == "Guardian"||res.result.role == "Student"){
+                            that.$router.push({ path: "/areaAdmin/createActivity",query:{token:res.result.token}});
+                        }else if(res.result.role == "Teacher"){
+                            that.$router.push({ path: "/areaAdmin/createActivity",query:{token:res.result.token}});
+                        }else if(res.result.role == "Teacher"){
+                             that.$router.push({ path: "/areaAdmin/createActivity",query:{token:res.result.token}});
                         }else{
-                            
+                            that.$router.push({ path: "/areaAdmin/createActivity",query:{token:res.result.token}});
                         }
                         // if (res.role < 4) {
                         //     that.$router.push({ path: "/myLesson"});

@@ -47,45 +47,35 @@
                         </div>
                    </div>
 
-
                 </van-list>
               </van-pull-refresh>
               </div>
             </van-tab>
         <van-tab title="活动统计">
-             <div id="echart" ref="mychart"></div>
-            <!-- <div class="statisticsList">
-                <ul>
-                    <li v-for="statistics in myClassstatStatistics">
-                        <h3><em>{{statistics.nianji}}{{statistics.banji}}</em>上传作品<span>{{statistics.zuopinNum}}</span>个</h3>
-                        <div class="">
-                            <em>推荐作品</em>
-                            <p>
-                                <span v-for="zp in statistics.zuopingList">{{zp}}</span>
-                            </p>
-                        </div>
-                    </li>
-                </ul>
-            </div> -->
+            <van-field v-model="screen1" input-align="right" label="年级" placeholder="请选择年级" @click="" />
+            <van-field v-model="screen2" input-align="right" label="班级" placeholder="请选择班级" />
+            <char v-bind:wuping="wupinList" v-bind:shunu="shujuList"></char>
+            
         </van-tab>
         </van-tabs>
     </div>
 </template>
 
 <script>
-let echarts = require('echarts/lib/echarts');
-require('echarts/lib/chart/bar');
-require('echarts/lib/component/tooltip');
-require('echarts/lib/component/toolbox');
-require('echarts/lib/component/legend');
-require('echarts/lib/component/markLine');
-
+import chart from './../../views/charts'
 export default {
     name:'activityContent',
+    components:{
+        "char":chart
+    },
     data(){
         return{
+            screen1:'321',
+            screen2:'3121',
+            wupinList:["一年级","二年级","三年级","四年级","五年级","六年级"],
+            shujuList:[5, 20, 36, 10, 10, 200],
             active: 0,                      //默认TBA标签选中
-             isLoading: false, //列表数据加载中
+            isLoading: false, //列表数据加载中
             isRefresh: false, //正在刷新数据
             loading: false, //列表加载数据
             finished: false, //列表中是否加载了所有数据
@@ -134,13 +124,17 @@ export default {
         this.setheight();
     },
     methods:{
+        setnianji:function(){
+            
+        },
         setheight:function(){
-            //let newheight= this.$refs.winHeight.offsetHeight;
+            let newheight= this.$refs.winHeight.offsetHeight;
             console.log(newheight)
             this.boxheight = newheight-44+"px";
         },
         loadxiangqing:function(){
             let that = this;
+            let uid = that.$route.query.uId;
              let url = "/api/Plan/GetMyPlanList";
              let param = { pageindex: that.pageIndex, val: that.searchData };
              that.$api.get(url, param, res => {

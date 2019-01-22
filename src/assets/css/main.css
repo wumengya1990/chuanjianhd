@@ -44,7 +44,7 @@ body,html{height:100%}
 .myActivityList{ overflow: hidden; overflow-y: auto; position: relative;}
 .myActivityList .worksBox{ margin: 10px; padding:0 0 10px; overflow: hidden; border-bottom: 1px solid #eaeaea;}
 .myActivityList .worksBox .worksBoxVideo{overflow: hidden; border-radius: 3px; width: 100%; height: 240px; background: rgba(0,0,0,0.8); position: relative; margin: 0 0 10px;}
-.myActivityList .worksBox .worksBoxVideo video{ position: absolute; width: 100%; height: 100%; left: 0; top: 0; right: 0; bottom: 0; margin: auto; z-index: 100;}
+.myActivityList .worksBox .worksBoxVideo video{ position: absolute; width: 100%; height:100%; left: 0; top: 0; right: 0; bottom: 0; margin: auto; z-index: 100;}
 .myActivityList .worksBox .worksBoxAbout{ position: relative; padding: 0 0 10px}
 .myActivityList .worksBox .worksBoxAbout .userImg{ float: left; width: 3rem; height: 3rem; border-radius: 50%; margin:5px 10px 0 0;}
 .myActivityList .worksBox .worksBoxAbout .userImg img{ width: 100%; height: 100%;}
@@ -60,6 +60,7 @@ body,html{height:100%}
 
 
 /* 活动统计 */
+.statisticsList{ overflow: hidden; overflow-y: auto; position: relative;}
 .statisticsList ul li{ border-bottom: 1px solid #eaeaea; padding: 10px;}
 .statisticsList ul li h3{ padding: 0 0 5px;}
 .statisticsList ul li h3 em{ color: #1e88dd; padding: 0 5px 0 0}
@@ -67,10 +68,14 @@ body,html{height:100%}
 .statisticsList ul li div em{ color: #999999; display: block;}
 .statisticsList ul li div p span{ display: inline-block; background: #64bad9; color: #FFFFFF; margin: 10px 10px 0 0;  padding: 3px 10px; border-radius:2px;}
 
-
 /* 创建活动 */
 .creatActivityM{ position: absolute; left: 0; top: 0; right: 0; bottom: 0; margin: auto; overflow: hidden; overflow-y: auto;}
 .creatActivityM ul li{ border-bottom:1px solid #eaeaea; padding: 10px 0;}
 .creatActivityM ul li em{ color: #666666;  font-size: 0.9em; padding: 0 10px;}
 .creatActivityM ul li em i{ color: #F00; padding: 0 5px; vertical-align: middle;}
 .creatActivityM .bts{ padding:10px;}
+
+.fixedBut{ position: absolute; right:20px; bottom: 30px; z-index: 1;}
+.fixedBut button{width:40px; height: 40px; line-height: 47px; text-align: center; padding: 0;}
+.fixedBut button span{ color: #FFFFFF; font-size:22px;}
+.fixedBut button input{ position: absolute; left: 0; top: 0; right: 0; bottom: 0; margin: auto; opacity: 0;}

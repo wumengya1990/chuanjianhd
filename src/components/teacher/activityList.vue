@@ -65,7 +65,7 @@ mounted(){
 methods:{
     intoDetails:function(artid){                //进入到活
         var _this = this;
-        _this.$router.push({path:'/teacher/tActivityContent'});
+        _this.$router.push({path:'/teacher/tActivityContent',query:{uId:33353}});
     },
     onRefresh:function(){
          this.loading = false;
@@ -85,7 +85,7 @@ methods:{
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/Plan/GetMyPlanList";
+            let url = "/api/upload/file";
             let param = { pageindex: that.pageIndex, val: that.searchData };            //获取传参
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
@@ -97,23 +97,24 @@ methods:{
                     }
                 }
             }
-            that.$api.get(url, param, res => {
-                let resCount = res.length;
-                console.log("成功加载备课:" + resCount);
-                // console.log(res);
-                if (isInit == true) {
-                    that.myPlanList = res;
-                } else {
-                    that.myPlanList = that.myPlanList.concat(res);
-                }
-                that.pageIndex++;
-                // 加载状态结束
-                that.loading = false;
-                that.isLoading = false;
-                that.isRefresh = false;
-                if (resCount < 10) {
-                    that.finished = true;
-                }
+            that.$api.get(url, null, res => {
+                console.log(res);
+                // let resCount = res.length;
+                // console.log("成功加载备课:" + resCount);
+                // // console.log(res);
+                // if (isInit == true) {
+                //     that.myPlanList = res;
+                // } else {
+                //     that.myPlanList = that.myPlanList.concat(res);
+                // }
+                // that.pageIndex++;
+                // // 加载状态结束
+                // that.loading = false;
+                // that.isLoading = false;
+                // that.isRefresh = false;
+                // if (resCount < 10) {
+                //     that.finished = true;
+                // }
             });
         }
 }

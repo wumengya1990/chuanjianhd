@@ -68,9 +68,9 @@ const router = new Router({
       component: () => import('./components/areaAdmin/createActivity.vue')
     },
     {
-      path: '/areaAdmin/charts',          //区管图表
-      name: 'charts',
-      component: () => import('./components/areaAdmin/charts.vue')
+      path: '/charts',          //区管图表
+      name: 'miancharts',
+      component: () => import('./views/charts.vue')
     }
     
   ]

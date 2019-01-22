@@ -8,7 +8,7 @@ import VideoPlayer from 'vue-video-player'
 import echarts from 'echarts'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import { Tab, Tabs, List, Tag, Actionsheet, Button, Icon, Panel, Field, Popup, DatetimePicker, Notify, Stepper, PullRefresh } from 'vant'
+import { Tab, Tabs, List, Tag, Actionsheet, Button, Icon, Panel, Field, Popup, DatetimePicker, Notify, Stepper, PullRefresh, Cell } from 'vant'
 
 Vue.prototype.$echarts = echarts 
 
@@ -19,7 +19,7 @@ require('vue-video-player/src/custom-theme.css')
 
 Vue.use(VideoPlayer)
 Vue.use(ElementUI)
-Vue.use(Tab).use(Tabs).use(List).use(Tag).use(Actionsheet).use(Button).use(Icon).use(Panel).use(Field).use(Popup).use(DatetimePicker).use(Notify).use(Stepper).use(PullRefresh)
+Vue.use(Tab).use(Tabs).use(List).use(Tag).use(Actionsheet).use(Button).use(Icon).use(Panel).use(Field).use(Popup).use(DatetimePicker).use(Notify).use(Stepper).use(PullRefresh).use(Cell)
 
 Vue.config.productionTip = false
 

@@ -76,6 +76,7 @@ mounted(){
     this.loadstuList()
 },
 methods:{
+    
     intoDetails:function(artid){                //进入到活
         var _this = this;
         _this.$router.push({path:'/student/sActivityContent'});
@@ -104,8 +105,9 @@ methods:{
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/Plan/GetMyPlanList";
-            let param = { pageindex: that.pageIndex, val: that.searchData };            //获取传参
+            let url = "/api/upload/file";
+            let param = {uId:33353};            //获取传参
+            let uidc = that.$route.query.uId;
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
                 for (const key in mes) {
@@ -116,9 +118,10 @@ methods:{
                     }
                 }
             }
-            that.$api.get(url, param, res => {
+            that.$api.get(url, null, res => {
                 let resCount = res.length;
-                console.log("成功加载备课:" + resCount);
+                console.log(res);
+                // console.log("成功加载备课:" + resCount);
                 // console.log(res);
                 if (isInit == true) {
                     that.myPlanList = res;

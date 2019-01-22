@@ -39,7 +39,7 @@
                     <div>
                         <el-upload
                                 class="upload-demo"
-                                action="/api/Plan/UploadPlanFile"
+                                action="/api/activity/cover/upload"
                                 :loadingTxt="loadTxt"
                                 :http-request="pmUpload"
                                 :on-success="handleSuccess"
@@ -62,6 +62,7 @@
             </ul>
             <div class="bts">
                 <van-button type="primary" size="large" @click="submitForm()">创建活动</van-button>
+                <van-button type="danger" size="large" @click="backPage()" style="margin:10px 0 0;">返回</van-button>
             </div>
         </div>
 
@@ -128,6 +129,9 @@ data(){
     }
 },
 methods:{
+        backPage:function(){
+            this.$router.back(-1);
+        },
          /////开始附件上传相关功能
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -167,9 +171,10 @@ methods:{
         //axios自定义上传(教案设计)
         pdUpload(obj) {
             let the = this;
+            let token = the.$route.query.token;
             let fOrder = the.teachPlan.PlanFileList.length + 1;
-            let param = { files: obj.file, fileOrder: fOrder };
-            the.$api.uploadFile("/api/Plan/UploadPlanFile", param, data => {
+            let param = { file: obj.file, token:token};
+            the.$api.uploadFile("/api/activity/cover/upload", param, data => {
                 the.importLoading.close();
                 if (!data.success) {
                     the.$vnotify("图片上传失败");
@@ -185,9 +190,10 @@ methods:{
         //axios自定义上传(课堂素材)
         pmUpload(obj) {
             let the = this;
+            let token = the.$route.query.token;
             let fOrder = the.formList.PlanMatList.length + 1;
-            let param = { files: obj.file, fileOrder: fOrder };
-            the.$api.uploadFile("/api/Plan/UploadPlanFile", param, data => {
+            let param = { file: obj.file, token:token};
+            the.$api.uploadFile("/api/activity/cover/upload", param, data => {
                 the.importLoading.close();
                 if (!data.success) {
                     the.$vnotify("图片上传失败");

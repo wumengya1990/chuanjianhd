@@ -1,6 +1,9 @@
 <template>
     <div class="activityList bgmain mianScroll">
         <!-- <div class="activityListM"> -->
+        <div class="fixedBut">
+            <van-button round type="primary" @click="creatNew()"><van-icon name="add-square" /></van-button>
+        </div>
         <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
             <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList">
             <div class="activity" v-for="act in activityList" :key="act.activityID">
@@ -64,6 +67,10 @@ data(){
 },
 mounted(){},
 methods:{
+    creatNew:function(){
+        var _this = this;
+        _this.$router.push({path:'/areaAdmin/createActivity'});
+    },
     intoDetails:function(artid){                //进入到活
         var _this = this;
         // _this.$router.push({path:'/areaAdmin/scActivityContent',query:{activityID:artid}});

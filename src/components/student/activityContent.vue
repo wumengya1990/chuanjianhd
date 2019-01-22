@@ -38,7 +38,7 @@
                </div>
 
                <div class="xbts">
-                   <van-button round><van-icon name="video" /><input type="file"></van-button>
+                   <van-button round onclick="window.Android.setFlag(2)"><van-icon name="video" /><input type="file" accept="video/*" capture="camera"></van-button>
                </div>
             </van-tab>
         </van-tabs>

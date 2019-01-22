@@ -68,7 +68,7 @@ mounted(){
 methods:{
     intoDetails:function(artid){                //进入到活
         var _this = this;
-        _this.$router.push({path:'/schoolAdmin/scActivityContent'});
+        _this.$router.push({path:'/schoolAdmin/scActivityContent',query:{uId:33353}});
     },
     onRefresh:function(){
          this.loading = false;

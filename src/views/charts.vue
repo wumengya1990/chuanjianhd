@@ -10,9 +10,18 @@ export default {
   name: 'hello',
   data () {
     return {
-        wupin:["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"],
-        shuju:[5, 20, 36, 10, 10, 20]
+        
     }
+  },
+  props:{
+      wuping:{
+          type:Array,
+          required:true
+      },
+      shunu:{
+          type:Array,
+          required:true
+      }
   },
   mounted(){
     this.drawLine();
@@ -24,8 +33,11 @@ export default {
         // 绘制图表
         var option=({
             title: {
-                text: '世界人口总量',
-                subtext:'数据来自网络'
+                text: '作品上传情况',
+                subtext:'',
+                x:'center',
+                y:'10px',
+                textAlign:'left'
             },
             tooltip: {
                 trigger: 'axis',
@@ -34,12 +46,17 @@ export default {
                 }
             },
             legend: {
-                data: ['2012年']
+                orient: 'horizontal',
+                data: ['作品数量'],
+                x:'center',
+                y:'bottom',
+                bottom:'20px'
             },
             grid: {
                 left: '3%',
                 right: '4%',
-                bottom: '3%',
+                bottom: '10%',
+                top:'15%',
                 containLabel: true
             },
             xAxis: {
@@ -48,22 +65,22 @@ export default {
             },
             yAxis: {
                 type: 'category',
-                data: ['巴西','印尼','美国','印度','中国','世界人口(万)']
+                data: []
             },
             series: [
                 {
-                    name: '2012年',
+                    name: '作品数量',
                     type: 'bar',
-                    data: [19325, 23438, 31000, 121594, 134141, 681807]
+                    data: []
                 }
             ]
             }
         )
         
-        // for(var i=0; i<this.wupin.length;i++){
-        //      option.xAxis.data[i] = this.wupin[i]
-        //      option.series[0].data[i]  =   this.shuju[i]
-        // }
+        for(var i=0; i<this.wuping.length;i++){
+             option.yAxis.data[i] = this.wuping[i]
+             option.series[0].data[i]  = this.shunu[i]
+        }
        
 
         myChart.setOption(option);
