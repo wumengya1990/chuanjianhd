@@ -2,7 +2,7 @@ import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
 // 配置API接口地址
-var root = window.localStorage.ApiUrl;
+var root = "";
 
 // 引用axios
 // var axios = require("axios");
@@ -79,16 +79,17 @@ function apiAxios(method, url, params, success, failure) {
   if (params) {
     params = filterNull(params);
   }
-  if (root == undefined || root == "") {
-    root = Vue.prototype.apiUrl;
-    console.log("root未取得值，获取全局变量apiUrl:" + root);
-  }
+  // if (root == undefined || root == "") {
+  //   root = Vue.prototype.apiUrl;
+  //   console.log("root未取得值，获取全局变量apiUrl:" + root);
+  // }
   axios({
       method: method,
       url: url,
-      data: method === "POST" || method === "PUT" ? params : null,
-      params: method === "GET" || method === "DELETE" ? params : null,
-      baseURL: root,
+      // data: method === "POST" || method === "PUT" ? params : null,
+      params: method === "POST" || method === "PUT" ? params : null,
+      // params: method === "GET" || method === "DELETE" ? params : null,
+      // baseURL: root,
       // `headers` 是即将被发送的自定义请求头
       withCredentials: false
     })
@@ -121,15 +122,17 @@ function axiosFile(url, params, success, failure) {
   }
   axios({
       method: 'post',
-      url: url,
-      data: formParam,
+      url:url,
+      data:formParam,
       baseURL: root,
       headers: {
         'Content-Type': 'multipart/form-data'
+        // ,'Access-Control-Allow-Origin':'*'
       },
       withCredentials: false
     })
     .then(res => {
+      console.log(res.data);
       success(res.data);
     })
     .catch(err => {

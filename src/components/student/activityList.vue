@@ -1,28 +1,30 @@
 <template>
     <div class="activityList bgmain mianScroll">
-            <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
-                <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList">
-                <div class="activity" v-for="act in activityList" :key="act.activityID">
-                    <div class="activityLImg" >
-                        <img :src="act.hdImg">
-                    </div>
-                    <div class="activityContent" @click="intoDetails(act.activityID)">
-                        <h3>
-                            {{act.title}}
-                            <van-tag v-if="act.activityLevel==1" color="#07c160">班级</van-tag>
-                            <van-tag v-else-if="act.activityLevel==2" color="#0bcbdc">区级</van-tag>
-                            <van-tag v-else color="#1989fa">校级</van-tag>
-                        </h3>
-                        <ul>
-                            <li><em>活动日期：</em><div><p>{{act.activityStartDate}}~{{act.activityEndDate}}</p></div></li>
-                            <li><em>据活动结束时间：</em><div><p>天</p></div></li>
-                            <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
-                        </ul>
-                    </div>
+        <div class="activityListM">
+            <!-- <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
+                <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList"> -->
+                <div class="activity" v-for="act in activityLists" :key="act.activityID">
+                <div class="activityLImg" >
+                    <img :src="act.imageUrl">
                 </div>
-                </van-list>
-            </van-pull-refresh>
-
+                <div class="activityContent" @click="intoDetails(act.id)">
+                    <h3>
+                        {{act.name}}
+                        <van-tag v-if="act.level==1" color="#07c160">班级</van-tag>
+                        <van-tag v-else-if="act.level==2" color="#0bcbdc">区级</van-tag>
+                        <van-tag v-else color="#1989fa">校级</van-tag>
+                    </h3>
+                    <ul>
+                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.entTime}}</p></div></li>
+                        <li><em>据活动结束时间：</em><div><p>天</p></div></li>
+                        <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
+                    </ul>
+                </div>
+            </div>
+                
+                <!-- </van-list>
+            </van-pull-refresh> -->
+        </div>
         <van-popup v-model="peochoshow" position="bottom">
             <h3 style="height:50px; line-height:50px; text-align:center;">请选择参加本次活动的学生</h3>
            <van-button size="large" @click="loadList(stu.studentID)" v-for="stu in studentList">{{stu.studentName}}</van-button>
@@ -50,36 +52,67 @@ data(){
             {studentID:20181001,studentName:"张洋"},
             {studentID:20181002,studentName:"张扬"},
         ],
-        activityList:[
-            { 
-                activityID:20190101,
-                title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
-                hdImg:require('./../../assets/images/huodongImg.jpg'),
-                activityLevel:3, 
-                activityStartDate:"2019.01.10",
-                activityEndDate:"2019.02.10",
-                content:"活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容"
-            },
-             { 
-                activityID:20190102,
-                title:"云龙区演讲大赛",
-                hdImg:require('./../../assets/images/huodongImg.jpg'),
-                activityLevel:3, 
-                activityStartDate:"2019.01.10",
-                activityEndDate:"2019.02.10",
-                content:"活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容"
-            }
-        ]
+        studentLists:[],
+        // activityList:[
+        //     { 
+        //         activityID:20190101,
+        //         title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
+        //         hdImg:require('./../../assets/images/huodongImg.jpg'),
+        //         activityLevel:3, 
+        //         activityStartDate:"2019.01.10",
+        //         activityEndDate:"2019.02.10",
+        //         content:"活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容"
+        //     },
+        //      { 
+        //         activityID:20190102,
+        //         title:"云龙区演讲大赛",
+        //         hdImg:require('./../../assets/images/huodongImg.jpg'),
+        //         activityLevel:3, 
+        //         activityStartDate:"2019.01.10",
+        //         activityEndDate:"2019.02.10",
+        //         content:"活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容"
+        //     }
+        // ],
+        activityLists:[]
     }
 },
 mounted(){
-    this.loadstuList()
+    this.loadList(true)
 },
 methods:{
-    
+    huoqurenuw:function(){
+         let urlp = "/api/login";
+         if (dataList != null) {
+                let urlp = "/api/login";
+                that.$api.post(urlp, dataList, res => {
+                    console.log(res);
+                    if (res.status == "success") {
+                        console.log("授权登录成功");
+                        that.$store.commit("saveToken", res.result.token); //保存 token
+                        thism
+                        // if(res.result.role == "Guardian"||res.result.role == "Student"){
+                        //     that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token}});
+                        // }else if(res.result.role == "Teacher" || res.result.role == "ClassManager"){
+                        //     that.$router.push({ path: "/teacher/tActivityList",query:{token:res.result.token}});
+                        // }else if(res.result.role == "SchoolManager"){
+                        //      that.$router.push({ path: "/schoolAdmin/scActivityList",query:{token:res.result.token}});
+                        // }else{
+                        //     that.$router.push({ path: "/areaAdmin/arActivityList",query:{token:res.result.token}});
+                        // }
+                    } else {
+                        console.log("授权登录失败");
+                        that.$vnotify(res.errorMessage);
+                        that.$router.push({ path: "/errorPage" });
+                    }
+                });
+            } else {
+                that.$vnotify("参数传递不完整");
+                that.$router.push({ path: "/errorPage" });
+            }
+    },
     intoDetails:function(artid){                //进入到活
-        var _this = this;
-        _this.$router.push({path:'/student/sActivityContent'});
+         var _this = this;
+        _this.$router.push({path:'/student/sActivityContent',query:{hdid:artId}});
     },
     loadstuList:function(){
         this.peochoshow = true;
@@ -105,9 +138,10 @@ methods:{
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/upload/file";
-            let param = {uId:33353};            //获取传参
-            let uidc = that.$route.query.uId;
+            let url = "/api/activity/list";
+            // let token = that.$route.query.token;
+            let token = that.$store.state.token;
+            let param = { token:token};
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
                 for (const key in mes) {
@@ -118,15 +152,17 @@ methods:{
                     }
                 }
             }
-            that.$api.get(url, null, res => {
-                let resCount = res.length;
+            that.$api.post(url, param, res => {
                 console.log(res);
-                // console.log("成功加载备课:" + resCount);
+                that.activityLists = res.result;
+                console.log(that.activityLists);
+                let resCount = res.result.length;
+                console.log("成功加载:" + resCount);
                 // console.log(res);
                 if (isInit == true) {
-                    that.myPlanList = res;
+                    that.activityLists = res;
                 } else {
-                    that.myPlanList = that.myPlanList.concat(res);
+                    that.activityLists = that.activityLists.concat(res.result);
                 }
                 that.pageIndex++;
                 // 加载状态结束

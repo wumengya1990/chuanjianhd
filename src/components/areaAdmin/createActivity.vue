@@ -4,7 +4,7 @@
             <ul>
                 <li>
                     <em>活动名称<i>*</i></em>
-                    <div><van-field v-model="formList.title" placeholder="请输入活动名称" /></div>
+                    <div><van-field v-model="formList.name" placeholder="请输入活动名称" /></div>
                 </li>
                 <li>
                     <em>活动开始时间<i>*</i></em>
@@ -16,23 +16,23 @@
                 </li>
                 <li>
                     <em>输入各学校推荐作品数量<i>*</i></em>
-                    <div><van-stepper v-model="formList.schoolWorkNum" style="margin:5px 10px 0" /></div>
+                    <div><van-stepper v-model="formList.schoolRecommendCount" style="margin:5px 10px 0" /></div>
                 </li>
                 <li>
                     <em>输入各班级推荐作品数量<i>*</i></em>
-                    <div><van-stepper v-model="formList.classWorkNum" style="margin:5px 10px 0" /></div>
+                    <div><van-stepper v-model="formList.classRecommendCount" style="margin:5px 10px 0" /></div>
                 </li>
                 <li>
                     <em>输入活动内容<i>*</i></em>
-                    <div> <van-field v-model="formList.hdnr" type="textarea" placeholder="请输入活动内容" rows="1" autosize /></div>
+                    <div> <van-field v-model="formList.content" type="textarea" placeholder="请输入活动内容" rows="1" autosize /></div>
                 </li>
                 <li>
                     <em>输入活动要求<i>*</i></em>
-                    <div><van-field v-model="formList.hdyq" placeholder="请输入活动要求" /></div>
+                    <div><van-field v-model="formList.require" placeholder="请输入活动要求" /></div>
                 </li>
                 <li>
                     <em>备注</em>
-                    <div><van-field v-model="formList.hdbz" placeholder="请输入备注" /></div>
+                    <div><van-field v-model="formList.remark" placeholder="请输入备注" /></div>
                 </li>
                 <li>
                     <em>封面图</em>
@@ -107,15 +107,16 @@ data(){
         loadTxt: "文件上传中....",
         pmfiles:[],
         formList:{
-            title:'',
-            selBeginDate:this.getBeginTime(),
-            selEndDate:this.getEndTime(),
-            schoolWorkNum:0,
-            classWorkNum:0,
-            hdnr:'',
-            hdyq:'',
-            hdbz:'',
-            PlanMatList:[]
+            token:'',
+            name:'',
+            startTime:this.getBeginTime(),
+            entTime:this.getEndTime(),
+            schoolRecommendCount:0,
+            classRecommendCount:0,
+            content:'',
+            require:'',
+            remark:'',
+            imageUrl:''
         },
         //时间内容
         minDate: new Date(),
@@ -168,21 +169,6 @@ methods:{
             }
             return isPass;
         },
-        //axios自定义上传(教案设计)
-        pdUpload(obj) {
-            let the = this;
-            let token = the.$route.query.token;
-            let fOrder = the.teachPlan.PlanFileList.length + 1;
-            let param = { file: obj.file, token:token};
-            the.$api.uploadFile("/api/activity/cover/upload", param, data => {
-                the.importLoading.close();
-                if (!data.success) {
-                    the.$vnotify("图片上传失败");
-                } else {
-                    the.teachPlan.PlanFileList.push(data.planfile);
-                }
-            });
-        },
         ///on-change钩子，文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用。
         pmfileChange: function(file, fileList) {
             this.pmfiles = fileList;
@@ -190,15 +176,17 @@ methods:{
         //axios自定义上传(课堂素材)
         pmUpload(obj) {
             let the = this;
-            let token = the.$route.query.token;
-            let fOrder = the.formList.PlanMatList.length + 1;
+            let token = the.$store.state.token;
+            // let fOrder = the.formList.PlanMatList.length + 1;
             let param = { file: obj.file, token:token};
             the.$api.uploadFile("/api/activity/cover/upload", param, data => {
                 the.importLoading.close();
-                if (!data.success) {
+                console.log(data);
+                if (!data.status=="success") {
                     the.$vnotify("图片上传失败");
                 } else {
-                    the.teachPlan.PlanMatList.push(data.planfile);
+                    // the.formList.PlanMatList.push(data.planfile);
+                    this.formList.imageUrl = data.result.id;
                 }
             });
         },
@@ -220,8 +208,8 @@ methods:{
     //确认开始时间并查询课时定位
     confirmBegin: function(value) {
         console.log(value);
-        this.formList.selBeginDate = value;
-        if (this.formList.selBeginDate > this.formList.selEndDate) {
+        this.formList.startTime = value;
+        if (this.formList.startTime > this.formList.entTime) {
             this.$vnotify("开始日期不能大于结束日期");
             return false;
         }
@@ -232,8 +220,8 @@ methods:{
     //确认结束时间并查询课时定位
     confirmEnd: function(value) {
         typeof(value);
-        this.formList.selEndDate = value;
-        if (this.formList.selBeginDate > this.formList.selEndDate) {
+        this.formList.entTime = value;
+        if (this.formList.startTime > this.formList.entTime) {
             this.$vnotify("开始日期不能大于结束日期");
             return false;
         }
@@ -244,37 +232,46 @@ methods:{
     },
     getBeginTime:function(){
         let date = new Date();
-        var myDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
+        var myDate = date.getFullYear() + '/' + this.newNum((date.getMonth() + 1)) + '/' + this.newNum(date.getDate());
         return myDate;
     },
     getEndTime:function(){
         let date = new Date();
-        var myDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + (date.getDate()+1)
+        var myDate = date.getFullYear() + '/' + this.newNum((date.getMonth() + 1)) + '/' + this.newNum((date.getDate()+1));
         return myDate;
     },
-    //保存教案信息
+    newNum:function(time){
+        let newTime = "";
+        if( time < 10){
+            newTime='0'+time;
+        }else{
+            newTime = time;
+        }
+        return newTime;
+    },
+    //保存创建活动
     submitForm: function() {
         let the = this;
         let errMsg = "";
-        if (the.formList.title == "") {
+        if (the.formList.name == "") {
             errMsg += "请输入活动名称";
         }
-        if (the.formList.selBeginDate == "") {
+        if (the.formList.startTime == "") {
             errMsg += "请输入活动开始日期";
         }
-        if (the.formList.selEndDate == "") {
+        if (the.formList.entTime == "") {
             errMsg += "请输入活动结束日期";
         }
-        if (the.formList.schoolWorkNum == "") {
+        if (the.formList.schoolRecommendCount == "") {
             errMsg += "请输入学校推荐作品";
         }
-        if (the.formList.classWorkNum == "") {
+        if (the.formList.classRecommendCount == "") {
             errMsg += "请输入班级推荐作品";
         }
-        if (the.formList.hdnr == "") {
+        if (the.formList.content == "") {
             errMsg += "请输入活动内容";
         }
-        if (the.formList.hdyq == "") {
+        if (the.formList.require == "") {
             errMsg += "请输入活动要求";
         }
         if (errMsg != "") {
@@ -287,13 +284,19 @@ methods:{
             });
             return false;
         }
-        const vd = the.$vloading("保存中...");
-        let url = "/api/Plan/SaveTeachPlan";
-        the.$api.post(url, the.formList, data => {
-            vd.clear();
-            console.log(data.msg);
-            the.$vnotify(data.msg);
-            if (data.success) {
+        // const vd = the.$vloading("保存中...");
+        // let token = the.$route.query.token;
+        let token = the.$store.state.token;
+            the.formList.token = token;
+        let url = "/api/activity/race/create";
+        let activityInfoJson = JSON.stringify(the.formList);
+        let param = { activityInfoJson:activityInfoJson, token:token};
+        console.log(param);
+        the.$api.post(url, param, data => {
+            // vd.clear();
+            console.log(data.result);
+            the.$vnotify(data.result);
+            if (data.status == "success") {
                 this.$router.push({path:'/areaAdmin/arActivityList'});
             }
         });

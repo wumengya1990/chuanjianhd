@@ -8,15 +8,15 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/ConnectPage',
+      path: '/',
       name: 'ConnectPage',
       component: () => import('./views/ConnectPage.vue') 
     },
-    {
-      path: '/',
-      name: 'links',
-      component: () => import('./views/links.vue') 
-    },
+    // {
+    //   path: '/',
+    //   name: 'links',
+    //   component: () => import('./views/links.vue') 
+    // },
     {
       path: '/activityContent',
       name: 'activityContent',

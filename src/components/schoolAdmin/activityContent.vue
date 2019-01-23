@@ -3,18 +3,18 @@
         <van-tabs v-model="active" swipeable animated>
             <van-tab title="活动须知">
                 <div class="activityAbout">
-                    <h2>{{activity.title}}</h2>
+                    <h2>{{activityNew.name}}</h2>
                     <div class="activityImg"><img :src="activity.hdimg"></div>
                     <ul>
-                        <li><em>活动时间</em><div><p>{{activity.startTime}}~{{activity.endTime}}</p></div></li>
+                        <li><em>活动时间</em><div><p>{{activityNew.startTime}}~{{activityNew.entTime}}</p></div></li>
                         <li><em>活动级别</em><div>
-                            <p v-if="activity.activityLevel==1">班级活动</p>
-                            <p v-else-if="activity.activityLevel==2">校级活动</p>
+                            <p v-if="activityNew.level==1">班级活动</p>
+                            <p v-else-if="activityNew.level==2">校级活动</p>
                             <p v-else>区级活动</p>
                         </div></li>
-                        <li><em>活动内容</em><div><p>{{activity.activityCon}}</p></div></li>
-                        <li><em>活动要求</em><div><p>{{activity.activityRequire}}</p></div></li>
-                        <li><em>活动备注</em><div><p>{{activity.activityRemark}}</p></div></li>
+                        <li><em>活动内容</em><div><p>{{activityNew.content}}</p></div></li>
+                        <li><em>活动要求</em><div><p>{{activityNew.require}}</p></div></li>
+                        <li><em>活动备注</em><div><p>{{activityNew.remark}}</p></div></li>
                     </ul>
                 </div>
             </van-tab>
@@ -89,6 +89,7 @@ export default {
                 activityRequire:"要求要求要求要求要求要求要求要求要求要求要求",
                 activityRemark:"备注备注备注备注备注备注备注备注备注备注备注备注"
             },
+            activityNew:{},
             myClassstatStatistics:[
                 { nianji:"三年级", banji:"(1)班", zuopinNum:38, zuopingList:["张洋","张洋","张洋","张洋","张洋","张洋"]},
                 { nianji:"三年级", banji:"(2)班", zuopinNum:33, zuopingList:["张洋","张洋","张洋","张洋","张洋","张洋"]},
@@ -134,13 +135,14 @@ export default {
         },
         loadxiangqing:function(){
             let that = this;
-            let uid = that.$route.query.uId;
-             let url = "/api/Plan/GetMyPlanList";
-             let param = { pageindex: that.pageIndex, val: that.searchData };
-             that.$api.get(url, param, res => {
-                let resCount = res.length;
-                console.log("加载详情:" + resCount);
-                // console.log(res);
+            // let token = that.$route.query.token;
+            let wzid = that.$route.query.hdid;
+            let token = that.$store.state.token;
+             let url = "/api/activity/detail";
+             let param = { token:token,id:wzid};
+             that.$api.post(url, param, res => {
+                 that.activityNew = res.result;
+                 console.log(that.activityNew);
             });
         },
         onRefresh:function(){

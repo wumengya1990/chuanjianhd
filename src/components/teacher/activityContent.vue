@@ -1,20 +1,24 @@
 <template>
     <div class="activityContent mianScroll" ref="winHeight">
+        <div class="xbts">
+            <a @click="fackpage()">返回</a>
+        </div>
+
         <van-tabs v-model="active" swipeable animated>
             <van-tab title="活动须知">
                 <div class="activityAbout">
-                    <h2>{{activity.title}}</h2>
+                    <h2>{{activityNew.name}}</h2>
                     <div class="activityImg"><img :src="activity.hdimg"></div>
                     <ul>
-                        <li><em>活动时间</em><div><p>{{activity.startTime}}~{{activity.endTime}}</p></div></li>
+                        <li><em>活动时间</em><div><p>{{activityNew.startTime}}~{{activityNew.entTime}}</p></div></li>
                         <li><em>活动级别</em><div>
-                            <p v-if="activity.activityLevel==1">班级活动</p>
-                            <p v-else-if="activity.activityLevel==2">校级活动</p>
+                            <p v-if="activityNew.level==1">班级活动</p>
+                            <p v-else-if="activityNew.level==2">校级活动</p>
                             <p v-else>区级活动</p>
                         </div></li>
-                        <li><em>活动内容</em><div><p>{{activity.activityCon}}</p></div></li>
-                        <li><em>活动要求</em><div><p>{{activity.activityRequire}}</p></div></li>
-                        <li><em>活动备注</em><div><p>{{activity.activityRemark}}</p></div></li>
+                        <li><em>活动内容</em><div><p>{{activityNew.content}}</p></div></li>
+                        <li><em>活动要求</em><div><p>{{activityNew.require}}</p></div></li>
+                        <li><em>活动备注</em><div><p>{{activityNew.remark}}</p></div></li>
                     </ul>
                 </div>
             </van-tab>
@@ -25,13 +29,6 @@
                      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList" >
                    <div class="worksBox" v-for="zp in studentworks" >
                        <div class="worksBoxVideo">
-                       <!-- <video-player class="video-player vjs-custom-skin"
-                            ref="videoPlayer"
-                            :playsinline="true"
-                            :options="playerOptions"
-                        >
-                        <source :src="zp.sources.src" :type="zp.sources.type">
-                        </video-player> -->
                         <video :src="zp.isrc" preload="auto" controls="controls" poster="./../../assets/images/huodongImg.jpg" >
                         Your browser does not support the video tag.
                         </video>
@@ -83,16 +80,18 @@ export default {
             isRefresh: false, //正在刷新数据
             loading: false, //列表加载数据
             finished: false, //列表中是否加载了所有数据
-            activity:{                      //活动介绍
-                title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
-                activityLevel:3,
-                hdimg:require('./../../assets/images/huodongImg.jpg'),
-                startTime:"2019.01.16",
-                endTime:"2019.01.20",
-                activityCon:"内容内容内容内容内容内容内容内容内容内容内容",
-                activityRequire:"要求要求要求要求要求要求要求要求要求要求要求",
-                activityRemark:"备注备注备注备注备注备注备注备注备注备注备注备注"
-            },
+            pageIndex:1,
+            // activity:{                      //活动介绍
+            //     title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
+            //     activityLevel:3,
+            //     hdimg:require('./../../assets/images/huodongImg.jpg'),
+            //     startTime:"2019.01.16",
+            //     endTime:"2019.01.20",
+            //     activityCon:"内容内容内容内容内容内容内容内容内容内容内容",
+            //     activityRequire:"要求要求要求要求要求要求要求要求要求要求要求",
+            //     activityRemark:"备注备注备注备注备注备注备注备注备注备注备注备注"
+            // },
+            activityNew:{},
             myClassstatStatistics:[
                 { nianji:"三年级", banji:"(1)班", zuopinNum:38, zuopingList:["张洋","张洋","张洋","张洋","张洋","张洋"]},
                 { nianji:"三年级", banji:"(2)班", zuopinNum:33, zuopingList:["张洋","张洋","张洋","张洋","张洋","张洋"]},
@@ -132,6 +131,9 @@ export default {
         this.setheight()
     },
     methods:{
+        fackpage:function(){
+             this.$router.back(-1);
+        },
         setheight:function(){
             let newheight= this.$refs.winHeight.offsetHeight;
             console.log(newheight)
@@ -139,15 +141,15 @@ export default {
         },
         loadxiangqing:function(){
             let that = this;
-            let uid = that.$route.query.uId;
-            console.log(uid);
-            //  let url = "/api/Plan/GetMyPlanList";
-            //  let param = { pageindex: that.pageIndex, val: that.searchData };
-            //  that.$api.get(url, param, res => {
-            //     let resCount = res.length;
-            //     console.log("加载详情:" + resCount);
-            //     // console.log(res);
-            // });
+            // let token = that.$route.query.token;
+            let wzid = that.$route.query.hdid;
+            let token = that.$store.state.token;
+             let url = "/api/activity/detail";
+             let param = { token:token,id:wzid};
+             that.$api.post(url, param, res => {
+                 that.activityNew = res.result;
+                 console.log(that.activityNew);
+            });
         },
         onRefresh:function(){
          this.loading = false;
@@ -167,8 +169,12 @@ export default {
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/Plan/GetMyPlanList";
-            let param = { pageindex: that.pageIndex, val: that.searchData };            //获取传参
+
+            let wzid = that.$route.query.hdid;
+            let token = that.$store.state.token;
+            let url = "/api/production/list";
+            let param = { token:token,activityInfoId:wzid};
+                       //获取传参
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
                 for (const key in mes) {
@@ -179,7 +185,7 @@ export default {
                     }
                 }
             }
-            that.$api.get(url, param, res => {
+            that.$api.post(url, param, res => {
                 let resCount = res.length;
                 console.log("成功加载备课:" + resCount);
                 // console.log(res);
