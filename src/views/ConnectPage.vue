@@ -50,7 +50,7 @@ export default {
                         // that.$store.commit("saveRole", res.result.role); //保存 role
                         // that.$store.commit("saveUid", res.result.userId);
                         if(res.result.role == "Guardian"||res.result.role == "Student"){
-                            that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token}});
+                            that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token,uid:dataList.uId}});
                         }else if(res.result.role == "Teacher" || res.result.role == "ClassManager"){
                             that.$router.push({ path: "/teacher/tActivityList",query:{token:res.result.token}});
                         }else if(res.result.role == "SchoolManager"){

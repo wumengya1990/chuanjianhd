@@ -67,6 +67,7 @@ data(){
 },
 mounted(){
     this.loadList(true)
+    
 },
 methods:{
     intoDetails:function(artid){                //进入到活
@@ -111,6 +112,7 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
+                this.timeFn(this.res.result.startTime,this.res.result.entTime);
                 // console.log(res);
                 if (isInit == true) {
                     that.activityLists = res;
@@ -126,6 +128,36 @@ methods:{
                     that.finished = true;
                 }
             });
+        },
+        timeFn(ktian,etian){
+            //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+                let dateBegin = new Date(ktian);//将-转化为/，使用new Date
+                let dateEnd = new Date(etian);
+                let dateNow = new Date();//获取当前时间
+                let weikaishi = dateBegin.getTime() - dateNow.getTime();
+                let weijiesu = dateEnd.getTime() - dateNow.getTime();
+                let weikaishid = Math.floor(weikaishi / (24 * 3600 * 1000));
+                let weijiesud = Math.floor(weijiesu / (24 * 3600 * 1000));
+                
+                // tianshuyu:'',
+                if(weikaishid > 0){
+                    this.xiangchatian = weikaishid;
+                    this.tianshuyu ="活动暂未开始";
+                    this.hdzt = 0
+                }else{
+                    if(weijiesud < 0){
+                        this.xiangchatian = weijiesud;
+                        this.tianshuyu ="活动已结束";
+                        this.hdzt = 3
+                    }else{
+                    this.xiangchatian = weijiesud;
+                    this.tianshuyu = "活动进行中"
+                    this.hdzt = 1
+                    }
+                }
+                // console.log(this.xiangchatian);
+                // console.log(this.tianshuyu);
+
         }
 }
 }

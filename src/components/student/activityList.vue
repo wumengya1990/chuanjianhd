@@ -27,7 +27,7 @@
         </div>
         <van-popup v-model="peochoshow" position="bottom">
             <h3 style="height:50px; line-height:50px; text-align:center;">请选择参加本次活动的学生</h3>
-           <van-button size="large" @click="loadList(stu.studentID)" v-for="stu in studentList">{{stu.studentName}}</van-button>
+           <van-button size="large" v-for="(stu,index) in studentLists" :key="index" @click="choStudent(stu.token)">{{stu.studentName}}</van-button>
         </van-popup>
        
     </div>
@@ -77,28 +77,33 @@ data(){
     }
 },
 mounted(){
-    this.loadList(true)
+    // this.loadList(true)
+    this.huoqurenuw();
+   
 },
 methods:{
     huoqurenuw:function(){
+        let that = this;
+         let uid = that.$route.query.uid;
          let urlp = "/api/login";
+         param = {uid:uid}
          if (dataList != null) {
                 let urlp = "/api/login";
-                that.$api.post(urlp, dataList, res => {
+                that.$api.post(urlp, param, res => {
                     console.log(res);
                     if (res.status == "success") {
                         console.log("授权登录成功");
-                        that.$store.commit("saveToken", res.result.token); //保存 token
-                        thism
-                        // if(res.result.role == "Guardian"||res.result.role == "Student"){
-                        //     that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token}});
-                        // }else if(res.result.role == "Teacher" || res.result.role == "ClassManager"){
-                        //     that.$router.push({ path: "/teacher/tActivityList",query:{token:res.result.token}});
-                        // }else if(res.result.role == "SchoolManager"){
-                        //      that.$router.push({ path: "/schoolAdmin/scActivityList",query:{token:res.result.token}});
-                        // }else{
-                        //     that.$router.push({ path: "/areaAdmin/arActivityList",query:{token:res.result.token}});
-                        // }
+                        if( res.result.length != 1){
+                            that.studentLists = res.result;
+                            that.peochoshow =! that.peochoshow;
+                        }else{
+                            that.$store.commit("saveToken", res.result.token); //保存 token
+                            this.loadList(true);
+                            
+                        }
+
+                        
+
                     } else {
                         console.log("授权登录失败");
                         that.$vnotify(res.errorMessage);
@@ -114,11 +119,17 @@ methods:{
          var _this = this;
         _this.$router.push({path:'/student/sActivityContent',query:{hdid:artId}});
     },
-    loadstuList:function(){
-        this.peochoshow = true;
-    },
-    loadList:function(stuid){
-        this.peochoshow = false;
+    // loadstuList:function(){
+    //     this.peochoshow = true;
+    // },
+    // loadList:function(stuid){
+    //     this.peochoshow = false;
+    // },
+    choStudent:function(stuTonken){
+        this.$store.commit("saveToken", stuTonken);
+        this.peochoshow =! this.peochoshow;
+        this.loadList(true);
+
     },
     onRefresh:function(){
          this.loading = false;
@@ -158,6 +169,7 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
+                this.timeFn(this.res.result.startTime,this.res.result.entTime);
                 // console.log(res);
                 if (isInit == true) {
                     that.activityLists = res;
@@ -173,6 +185,36 @@ methods:{
                     that.finished = true;
                 }
             });
+        },
+        timeFn(ktian,etian){
+            //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
+                let dateBegin = new Date(ktian);//将-转化为/，使用new Date
+                let dateEnd = new Date(etian);
+                let dateNow = new Date();//获取当前时间
+                let weikaishi = dateBegin.getTime() - dateNow.getTime();
+                let weijiesu = dateEnd.getTime() - dateNow.getTime();
+                let weikaishid = Math.floor(weikaishi / (24 * 3600 * 1000));
+                let weijiesud = Math.floor(weijiesu / (24 * 3600 * 1000));
+                
+                // tianshuyu:'',
+                if(weikaishid > 0){
+                    this.xiangchatian = weikaishid;
+                    this.tianshuyu ="活动暂未开始";
+                    this.hdzt = 0
+                }else{
+                    if(weijiesud < 0){
+                        this.xiangchatian = weijiesud;
+                        this.tianshuyu ="活动已结束";
+                        this.hdzt = 3
+                    }else{
+                    this.xiangchatian = weijiesud;
+                    this.tianshuyu = "活动进行中"
+                    this.hdzt = 1
+                    }
+                }
+                // console.log(this.xiangchatian);
+                // console.log(this.tianshuyu);
+
         }
 }
 }

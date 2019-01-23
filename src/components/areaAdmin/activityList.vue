@@ -56,7 +56,7 @@ data(){
 },
 mounted(){
      this.loadList(true)
-     this.timeFn("2019/01/01","2019/01/22")
+     
      
 },
 methods:{
@@ -101,18 +101,14 @@ methods:{
                 }
             }
             console.log(param);
-            that.$api.post(url, param, res => {
-                
+            that.$api.post(url, param, res => {            
                 console.log(res);
-
                 that.activityLists = res.result;
-
-                // that.timeFn(that.activityLists.startTime,that.activityLists.entTime);
-                
+                // that.timeFn(that.activityLists.startTime,that.activityLists.entTime);      
                 console.log(that.activityLists);
-
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
+                this.timeFn(this.res.result.startTime,this.res.result.entTime);
 
                 if (isInit == true) {
                     that.myPlanList = res;

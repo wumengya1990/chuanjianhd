@@ -89,7 +89,8 @@ export default {
                 remainingTimeDisplay: false,
                 fullscreenToggle: true  //全屏按钮
                 }
-            }
+            },
+            videoList:[]
         }
     },
     mounted(){
@@ -107,22 +108,18 @@ export default {
                  that.activityNew = res.result;
                  console.log(that.activityNew);
             });
+        },
+        loadList: function(isInit) {
+            let that = this;
+            let token = that.$store.state.token;
+            let url = "/api/production/list";
+            let param = {token:token};            //获取传参
+            that.$api.post(url, param, res => {
+                let resCount = res.result.length;
+                console.log("成功加载推荐活动:" + resCount);
+                that.videoList = res.result;
+            });
         }
-        // onLoad(){
-        // // 异步更新数据
-        // setTimeout(() => {
-        //     for (let i = 0; i < 10; i++) {
-        //     this.list.push(this.list.length + 1);
-        //     }
-        //     // 加载状态结束
-        //     this.loading = false;
-
-        //     // 数据全部加载完成
-        //     if (this.list.length >= 40) {
-        //     this.finished = true;
-        //     }
-        // }, 500);
-        // }
     }
 }
 </script>

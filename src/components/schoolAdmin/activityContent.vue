@@ -152,6 +152,7 @@ export default {
     //加载活动列表(isInit:是否清空后重新加载数据)
         loadList: function(isInit) {
             let that = this;
+            let token = that.$store.state.token;
             //判断是否正在加载数据
             if (that.isLoading == false) {
                 that.isLoading = true;
@@ -163,8 +164,8 @@ export default {
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/Plan/GetMyPlanList";
-            let param = { pageindex: that.pageIndex, val: that.searchData };            //获取传参
+            let url = "/api/production/list";
+            let param = {token:token};            //获取传参
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
                 for (const key in mes) {
@@ -175,14 +176,14 @@ export default {
                     }
                 }
             }
-            that.$api.get(url, param, res => {
-                let resCount = res.length;
-                console.log("成功加载备课:" + resCount);
+            that.$api.post(url, param, res => {
+                let resCount = res.result.length;
+                console.log("成功加载推荐活动:" + resCount);
                 // console.log(res);
                 if (isInit == true) {
-                    that.myPlanList = res;
+                    that.videoList = res.result;
                 } else {
-                    that.myPlanList = that.myPlanList.concat(res);
+                    that.videoList = that.myPlanList.concat(res.result);
                 }
                 that.pageIndex++;
                 // 加载状态结束

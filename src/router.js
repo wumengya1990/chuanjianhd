@@ -9,14 +9,18 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      redirect:'/links'
+    },
+    {
+      path: '/ConnectPage',
       name: 'ConnectPage',
       component: () => import('./views/ConnectPage.vue') 
     },
-    // {
-    //   path: '/',
-    //   name: 'links',
-    //   component: () => import('./views/links.vue') 
-    // },
+    {
+      path: '/links',
+      name: 'links',
+      component: () => import('./views/links.vue')
+    },
     {
       path: '/activityContent',
       name: 'activityContent',
