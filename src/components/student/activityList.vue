@@ -97,7 +97,7 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
-                    that.shicha();
+                that.shicha();
                 console.log(that.activityLists);
                 
 

@@ -23,11 +23,9 @@
                     </h3>
                     <ul>
                         <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.endTime}}</p></div></li>
-
-                        <!-- <li v-if="hdzt==0"><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li>
-                        <li v-else-if="hdzt==1"><em>据活动结束时间：</em><div><p>{{xiangchatian}}天</p></div></li>
-                        <li v-else><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li> -->
-
+                        <li v-if="act.shijianzt.zt==0"><em>据活动结束时间：</em><div><p style="color:#999999">{{act.shijianzt.tianshuyu}}</p></div></li>
+                        <li v-else-if="act.shijianzt.zt==1"><em>据活动结束时间：</em><div><p style="color:#07c160">{{act.shijianzt.xiangchatian}}天</p></div></li>
+                        <li v-else><em>据活动结束时间：</em><div><p style="color:#999999">{{act.shijianzt.tianshuyu}}</p></div></li>
                         <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
                     </ul>
                 </div>
@@ -120,7 +118,8 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
-                
+                that.shicha();
+                console.log(that.activityLists);
 
                 if (isInit == true) {
                     that.myPlanList = res;
@@ -137,9 +136,9 @@ methods:{
                 }
             });
         },
-        jisuanshijian:function(){
-            for(var i = 0; i<this.activityLists.result.length; i++){
-                this.timeFn(ktian,etian);
+        shicha:function(){
+            for(var i = 0; i<this.activityLists.length;i++){
+                this.activityLists[i].shijianzt = this.timeFn(this.activityLists[i].startTime,this.activityLists[i].endTime);
             }
         },
         timeFn(ktian,etian){
@@ -152,23 +151,26 @@ methods:{
                 let weikaishid = Math.floor(weikaishi / (24 * 3600 * 1000));
                 let weijiesud = Math.floor(weijiesu / (24 * 3600 * 1000));
                 
+                let shijian = new Object();
                 // tianshuyu:'',
                 if(weikaishid > 0){
-                    this.xiangchatian = weikaishid;
-                    this.tianshuyu ="活动暂未开始";
-                    this.hdzt = 0
+                    shijian.xiangchatian = weikaishid;
+                    shijian.tianshuyu = "活动暂未开始";
+                    shijian.zt = 0;
                 }else{
                     if(weijiesud < 0){
-                        this.xiangchatian = weijiesud;
-                        this.tianshuyu ="活动已结束";
-                        this.hdzt = 3
+                        shijian.xiangchatian = weijiesud;
+                        shijian.tianshuyu = "活动已结束";
+                        shijian.zt = 2;
                     }else{
-                    this.xiangchatian = weijiesud;
-                    this.tianshuyu = "活动进行中"
-                    this.hdzt = 1
+                        shijian.xiangchatian = weijiesud;
+                        shijian.tianshuyu = "活动进行中";
+                        shijian.zt = 1;
                     }
                 }
-                
+                // console.log(this.xiangchatian);
+                console.log(shijian);
+                return shijian;
 
         }
     
