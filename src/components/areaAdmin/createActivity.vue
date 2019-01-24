@@ -39,7 +39,7 @@
                     <div>
                         <el-upload
                                 class="upload-demo"
-                                action="/api/activity/cover/upload"
+                                action="/activity/cover/upload"
                                 :loadingTxt="loadTxt"
                                 :http-request="pmUpload"
                                 :on-success="handleSuccess"
@@ -110,7 +110,7 @@ data(){
             token:'',
             name:'',
             startTime:this.getBeginTime(),
-            entTime:this.getEndTime(),
+            endTime:this.getEndTime(),
             schoolRecommendCount:0,
             classRecommendCount:0,
             content:'',
@@ -178,15 +178,17 @@ methods:{
             let the = this;
             let token = the.$store.state.token;
             // let fOrder = the.formList.PlanMatList.length + 1;
-            let param = { file: obj.file, token:token};
-            the.$api.uploadFile("/api/activity/cover/upload", param, data => {
+            let param = { file: obj.file, token:token, project:'hjhd', appid:'oss33qcoy', appsecret:'kc05iq63'};
+            the.$api.uploadFile("http://58.218.201.43:18000/oss/material/hjhd/uploadMaterial", param, res => {
                 the.importLoading.close();
-                console.log(data);
-                if (!data.status=="success") {
+                console.log(res.data);
+                console.log(res.data[0].url);
+                if (!res.message=="Success") {
                     the.$vnotify("图片上传失败");
                 } else {
                     // the.formList.PlanMatList.push(data.planfile);
-                    this.formList.imageUrl = data.result.id;
+                    the.formList.imageUrl = res.data[0].url;
+                    console.log(the.formList.imageUrl);
                 }
             });
         },
@@ -288,7 +290,7 @@ methods:{
         // let token = the.$route.query.token;
         let token = the.$store.state.token;
             the.formList.token = token;
-        let url = "/api/activity/race/create";
+        let url = "/activity/race/create";
         let activityInfoJson = JSON.stringify(the.formList);
         let param = { activityInfoJson:activityInfoJson, token:token};
         console.log(param);
@@ -298,6 +300,8 @@ methods:{
             the.$vnotify(data.result);
             if (data.status == "success") {
                 this.$router.push({path:'/areaAdmin/arActivityList'});
+            }else{
+                the.$vnotify("创建失败");
             }
         });
     }

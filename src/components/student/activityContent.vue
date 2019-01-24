@@ -4,9 +4,9 @@
             <van-tab title="活动须知">
                 <div class="activityAbout">
                     <h2>{{activityNew.name}}</h2>
-                    <div class="activityImg"><img :src="activityNew.hdimg"></div>
+                    <div class="activityImg"><img :src="activityNew.imageUrl"></div>
                     <ul>
-                        <li><em>活动时间</em><div><p>{{activityNew.startTime}}~{{activityNew.entTime}}</p></div></li>
+                        <li><em>活动时间</em><div><p>{{activityNew.startTime}}~{{activityNew.endTime}}</p></div></li>
                         <li><em>活动级别</em><div>
                             <p v-if="activityNew.level==1">班级活动</p>
                             <p v-else-if="activityNew.level==2">校级活动</p>
@@ -102,7 +102,7 @@ export default {
             // let token = that.$route.query.token;
             let wzid = that.$route.query.hdid;
             let token = that.$store.state.token;
-             let url = "/api/activity/detail";
+             let url = "/activity/detail";
              let param = { token:token,id:wzid};
              that.$api.post(url, param, res => {
                  that.activityNew = res.result;
@@ -112,7 +112,7 @@ export default {
         loadList: function(isInit) {
             let that = this;
             let token = that.$store.state.token;
-            let url = "/api/production/list";
+            let url = "/production/list";
             let param = {token:token};            //获取传参
             that.$api.post(url, param, res => {
                 let resCount = res.result.length;

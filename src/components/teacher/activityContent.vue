@@ -1,5 +1,6 @@
 <template>
-    <div class="activityContent mianScroll" ref="winHeight">
+    <!-- <div class="activityContent mianScroll" ref="winHeight"> -->
+        <div class="activityContent mianScroll">
         <div class="xbts">
             <a @click="fackpage()">返回</a>
         </div>
@@ -8,9 +9,10 @@
             <van-tab title="活动须知">
                 <div class="activityAbout">
                     <h2>{{activityNew.name}}</h2>
+                    
                     <div class="activityImg"><img :src="activity.hdimg"></div>
                     <ul>
-                        <li><em>活动时间</em><div><p>{{activityNew.startTime}}~{{activityNew.entTime}}</p></div></li>
+                        <li><em>活动时间</em><div><p>{{activityNew.startTime}}~{{activityNew.endTime}}</p></div></li>
                         <li><em>活动级别</em><div>
                             <p v-if="activityNew.level==1">班级活动</p>
                             <p v-else-if="activityNew.level==2">校级活动</p>
@@ -81,16 +83,16 @@ export default {
             loading: false, //列表加载数据
             finished: false, //列表中是否加载了所有数据
             pageIndex:1,
-            // activity:{                      //活动介绍
-            //     title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
-            //     activityLevel:3,
-            //     hdimg:require('./../../assets/images/huodongImg.jpg'),
-            //     startTime:"2019.01.16",
-            //     endTime:"2019.01.20",
-            //     activityCon:"内容内容内容内容内容内容内容内容内容内容内容",
-            //     activityRequire:"要求要求要求要求要求要求要求要求要求要求要求",
-            //     activityRemark:"备注备注备注备注备注备注备注备注备注备注备注备注"
-            // },
+            activity:{                      //活动介绍
+                title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
+                activityLevel:3,
+                hdimg:require('./../../assets/images/huodongImg.jpg'),
+                startTime:"2019.01.16",
+                endTime:"2019.01.20",
+                activityCon:"内容内容内容内容内容内容内容内容内容内容内容",
+                activityRequire:"要求要求要求要求要求要求要求要求要求要求要求",
+                activityRemark:"备注备注备注备注备注备注备注备注备注备注备注备注"
+            },
             activityNew:{},
             myClassstatStatistics:[
                 { nianji:"三年级", banji:"(1)班", zuopinNum:38, zuopingList:["张洋","张洋","张洋","张洋","张洋","张洋"]},
@@ -128,7 +130,7 @@ export default {
     },
     mounted(){
         this.loadxiangqing()
-        this.setheight()
+        // this.setheight()
     },
     methods:{
         fackpage:function(){
@@ -144,7 +146,7 @@ export default {
             // let token = that.$route.query.token;
             let wzid = that.$route.query.hdid;
             let token = that.$store.state.token;
-             let url = "/api/activity/detail";
+             let url = "/activity/detail";
              let param = { token:token,id:wzid};
              that.$api.post(url, param, res => {
                  that.activityNew = res.result;
@@ -170,7 +172,7 @@ export default {
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/production/list";
+            let url = "/production/list";
             let param = {token:token};            //获取传参
             let mes = that.receive;
             if (that.$isNull(mes) == false) {

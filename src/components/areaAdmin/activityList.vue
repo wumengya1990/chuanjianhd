@@ -8,7 +8,10 @@
         <!-- <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
             <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList"> -->
             <div class="activity" v-for="act in activityLists" :key="act.activityID">
-                <div class="activityLImg" >
+                <div v-if="act.imageUrl==null" class="activityLImg" >
+                    <img :src="activity.hdimg">
+                </div>
+                <div v-else class="activityLImg" >
                     <img :src="act.imageUrl">
                 </div>
                 <div class="activityContent" @click="intoDetails(act.id)">
@@ -19,11 +22,11 @@
                         <van-tag v-else color="#1989fa">校级</van-tag>
                     </h3>
                     <ul>
-                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.entTime}}</p></div></li>
+                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.endTime}}</p></div></li>
 
-                        <li v-if="hdzt==0"><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li>
-                        <li v-else-if="hdzt==0"><em>据活动结束时间：</em><div><p>{{xiangchatian}}天</p></div></li>
-                        <li v-else><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li>
+                        <!-- <li v-if="hdzt==0"><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li>
+                        <li v-else-if="hdzt==1"><em>据活动结束时间：</em><div><p>{{xiangchatian}}天</p></div></li>
+                        <li v-else><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li> -->
 
                         <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
                     </ul>
@@ -51,13 +54,22 @@ data(){
         xiangchatian:0,
         tianshuyu:'',
         hdzt:0,                     //0未开始1进行中3已结束
-        activityLists:[]
+        activityLists:[],
+        activity:{                      //活动介绍
+            title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
+            activityLevel:3,
+            hdimg:require('./../../assets/images/huodongImg.jpg'),
+            startTime:"2019.01.16",
+            endTime:"2019.01.20",
+            activityCon:"内容内容内容内容内容内容内容内容内容内容内容",
+            activityRequire:"要求要求要求要求要求要求要求要求要求要求要求",
+            activityRemark:"备注备注备注备注备注备注备注备注备注备注备注备注"
+        },
+        huodongshijian:[],
     }
 },
 mounted(){
      this.loadList(true)
-     
-     
 },
 methods:{
     creatNew:function(){
@@ -86,7 +98,7 @@ methods:{
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/activity/list";
+            let url = "/activity/list";
             // let token = that.$route.query.token;
             let token = that.$store.state.token;
             let param = {token:token};            //获取传参
@@ -108,7 +120,7 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
-                this.timeFn(this.res.result.startTime,this.res.result.entTime);
+                
 
                 if (isInit == true) {
                     that.myPlanList = res;
@@ -124,6 +136,11 @@ methods:{
                     that.finished = true;
                 }
             });
+        },
+        jisuanshijian:function(){
+            for(var i = 0; i<this.activityLists.result.length; i++){
+                this.timeFn(ktian,etian);
+            }
         },
         timeFn(ktian,etian){
             //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
@@ -151,8 +168,7 @@ methods:{
                     this.hdzt = 1
                     }
                 }
-                // console.log(this.xiangchatian);
-                // console.log(this.tianshuyu);
+                
 
         }
     

@@ -15,8 +15,10 @@
                         <van-tag v-else color="#1989fa">校级</van-tag>
                     </h3>
                     <ul>
-                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.entTime}}</p></div></li>
-                        <li><em>据活动结束时间：</em><div><p>天</p></div></li>
+                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.endTime}}</p></div></li>
+                        <li v-if="hdzt==0"><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li>
+                        <li v-else-if="hdzt==1"><em>据活动结束时间：</em><div><p>{{xiangchatian}}天</p></div></li>
+                        <li v-else><em>据活动结束时间：</em><div><p>{{tianshuyu}}</p></div></li>
                         <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
                     </ul>
                 </div>
@@ -66,9 +68,9 @@ mounted(){
    
 },
 methods:{
-    intoDetails:function(artId){                //进入到活
+    intoDetails:function(artid){                //进入到活
         var _this = this;
-        _this.$router.push({path:'/teacher/tActivityContent',query:{hdid:artId}});
+        _this.$router.push({path:'/teacher/tActivityContent',query:{hdid:artid}});
     },
     onRefresh:function(){
          this.loading = false;
@@ -78,17 +80,17 @@ methods:{
         loadList: function(isInit) {
             let that = this;
             //判断是否正在加载数据
-            if (that.isLoading == false) {
-                that.isLoading = true;
-            } else {
-                return false;
-            }
-            if (isInit == true) {
-                that.finished = false;
-                that.pageIndex = 1;
-                that.myPlanList = [];
-            }
-            let url = "/api/activity/list";
+            // if (that.isLoading == false) {
+            //     that.isLoading = true;
+            // } else {
+            //     return false;
+            // }
+            // if (isInit == true) {
+            //     that.finished = false;
+            //     that.pageIndex = 1;
+            //     that.myPlanList = [];
+            // }
+            let url = "/activity/list";
             // let token = that.$route.query.token;
             let token = that.$store.state.token;
             let param = { token:token};            //获取传参
@@ -108,21 +110,21 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
-                 this.timeFn(this.res.result.startTime,this.res.result.entTime);
+                 this.timeFn(res.result.startTime,res.result.endTime);
                 // console.log(res);
-                if (isInit == true) {
-                    that.activityLists = res;
-                } else {
-                    that.activityLists = that.activityLists.concat(res.result);
-                }
-                that.pageIndex++;
-                // 加载状态结束
-                that.loading = false;
-                that.isLoading = false;
-                that.isRefresh = false;
-                if (resCount < 10) {
-                    that.finished = true;
-                }
+                // if (isInit == true) {
+                //     that.activityLists = res;
+                // } else {
+                //     that.activityLists = that.activityLists.concat(res.result);
+                // }
+                // that.pageIndex++;
+                // // 加载状态结束
+                // that.loading = false;
+                // that.isLoading = false;
+                // that.isRefresh = false;
+                // if (resCount < 10) {
+                //     that.finished = true;
+                // }
             });
         },
         timeFn(ktian,etian){

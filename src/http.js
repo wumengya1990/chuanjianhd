@@ -1,8 +1,15 @@
 import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
+import baseUrl from "./setBaseUrl"
 // 配置API接口地址
-var root = "";
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = baseUrl;
+
+var root = baseUrl;
+
+// axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = baseUrl;
 
 // 引用axios
 // var axios = require("axios");
@@ -89,7 +96,7 @@ function apiAxios(method, url, params, success, failure) {
       // data: method === "POST" || method === "PUT" ? params : null,
       params: method === "POST" || method === "PUT" ? params : null,
       // params: method === "GET" || method === "DELETE" ? params : null,
-      // baseURL: root,
+      baseURL: root,
       // `headers` 是即将被发送的自定义请求头
       withCredentials: false
     })
@@ -127,7 +134,6 @@ function axiosFile(url, params, success, failure) {
       baseURL: root,
       headers: {
         'Content-Type': 'multipart/form-data'
-        // ,'Access-Control-Allow-Origin':'*'
       },
       withCredentials: false
     })
@@ -193,7 +199,7 @@ function downloadFile(url, params) {
 function openFile(name, path) {
   window.open(
     root +
-    "/api/Base/DownLoad" +
+    "/Base/DownLoad" +
     "?fileName=" +
     name +
     "&filePath=" +

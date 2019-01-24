@@ -72,7 +72,7 @@ mounted(){
 methods:{
     intoDetails:function(artid){                //进入到活
          var _this = this;
-        _this.$router.push({path:'/schoolAdmin/scActivityContent',query:{hdid:artId}});
+        _this.$router.push({path:'/schoolAdmin/scActivityContent',query:{hdid:artid}});
     },
     onRefresh:function(){
          this.loading = false;
@@ -92,7 +92,7 @@ methods:{
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/activity/list";
+            let url = "/activity/list";
             // let token = that.$route.query.token;
             let token = that.$store.state.token;
             let param = { token:token};             //获取传参
@@ -112,7 +112,7 @@ methods:{
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
-                this.timeFn(this.res.result.startTime,this.res.result.entTime);
+                this.timeFn(res.result.startTime,res.result.entTime);
                 // console.log(res);
                 if (isInit == true) {
                     that.activityLists = res;

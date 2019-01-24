@@ -15,8 +15,10 @@
                         <van-tag v-else color="#1989fa">校级</van-tag>
                     </h3>
                     <ul>
-                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.entTime}}</p></div></li>
-                        <li><em>据活动结束时间：</em><div><p>天</p></div></li>
+                        <li><em>活动日期：</em><div><p>{{act.startTime}}~{{act.endTime}}</p></div></li>
+                        <li v-if="act.shijianzt.zt==0"><em>据活动结束时间：</em><div><p style="color:#999999">{{act.shijianzt.tianshuyu}}</p></div></li>
+                        <li v-else-if="act.shijianzt.zt==1"><em>据活动结束时间：</em><div><p style="color:#07c160">{{act.shijianzt.xiangchatian}}天</p></div></li>
+                        <li v-else><em>据活动结束时间：</em><div><p style="color:#999999">{{act.shijianzt.tianshuyu}}</p></div></li>
                         <li><div><p><span>内容摘要：</span>{{act.content}}</p></div></li>
                     </ul>
                 </div>
@@ -25,10 +27,6 @@
                 <!-- </van-list>
             </van-pull-refresh> -->
         </div>
-        <van-popup v-model="peochoshow" position="bottom">
-            <h3 style="height:50px; line-height:50px; text-align:center;">请选择参加本次活动的学生</h3>
-           <van-button size="large" v-for="(stu,index) in studentLists" :key="index" @click="choStudent(stu.token)">{{stu.studentName}}</van-button>
-        </van-popup>
        
     </div>
 </template>
@@ -47,89 +45,17 @@ data(){
         isRefresh: false, //正在刷新数据
         loading: false, //列表加载数据
         finished: false, //列表中是否加载了所有数据
-        peochoshow:false,
-        studentList:[
-            {studentID:20181001,studentName:"张洋"},
-            {studentID:20181002,studentName:"张扬"},
-        ],
-        studentLists:[],
-        // activityList:[
-        //     { 
-        //         activityID:20190101,
-        //         title:"云龙区演讲大赛云龙区演讲大赛云龙区演讲大赛",
-        //         hdImg:require('./../../assets/images/huodongImg.jpg'),
-        //         activityLevel:3, 
-        //         activityStartDate:"2019.01.10",
-        //         activityEndDate:"2019.02.10",
-        //         content:"活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容"
-        //     },
-        //      { 
-        //         activityID:20190102,
-        //         title:"云龙区演讲大赛",
-        //         hdImg:require('./../../assets/images/huodongImg.jpg'),
-        //         activityLevel:3, 
-        //         activityStartDate:"2019.01.10",
-        //         activityEndDate:"2019.02.10",
-        //         content:"活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容活动内容"
-        //     }
-        // ],
-        activityLists:[]
+        activityLists:[],
+        shijianList:[]
     }
 },
 mounted(){
-    // this.loadList(true)
-    this.huoqurenuw();
-   
+    this.loadList(true)
 },
 methods:{
-    huoqurenuw:function(){
-        let that = this;
-         let uid = that.$route.query.uid;
-         let urlp = "/api/login";
-         param = {uid:uid}
-         if (dataList != null) {
-                let urlp = "/api/login";
-                that.$api.post(urlp, param, res => {
-                    console.log(res);
-                    if (res.status == "success") {
-                        console.log("授权登录成功");
-                        if( res.result.length != 1){
-                            that.studentLists = res.result;
-                            that.peochoshow =! that.peochoshow;
-                        }else{
-                            that.$store.commit("saveToken", res.result.token); //保存 token
-                            this.loadList(true);
-                            
-                        }
-
-                        
-
-                    } else {
-                        console.log("授权登录失败");
-                        that.$vnotify(res.errorMessage);
-                        that.$router.push({ path: "/errorPage" });
-                    }
-                });
-            } else {
-                that.$vnotify("参数传递不完整");
-                that.$router.push({ path: "/errorPage" });
-            }
-    },
     intoDetails:function(artid){                //进入到活
          var _this = this;
-        _this.$router.push({path:'/student/sActivityContent',query:{hdid:artId}});
-    },
-    // loadstuList:function(){
-    //     this.peochoshow = true;
-    // },
-    // loadList:function(stuid){
-    //     this.peochoshow = false;
-    // },
-    choStudent:function(stuTonken){
-        this.$store.commit("saveToken", stuTonken);
-        this.peochoshow =! this.peochoshow;
-        this.loadList(true);
-
+        _this.$router.push({path:'/student/sActivityContent',query:{hdid:artid}});
     },
     onRefresh:function(){
          this.loading = false;
@@ -149,10 +75,10 @@ methods:{
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/activity/list";
+            let url = "/activity/list";
             // let token = that.$route.query.token;
             let token = that.$store.state.token;
-            let param = { token:token};
+            let param = {token:token};            //获取传参
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
                 for (const key in mes) {
@@ -163,18 +89,22 @@ methods:{
                     }
                 }
             }
-            that.$api.post(url, param, res => {
+            console.log(param);
+            that.$api.post(url, param, res => {            
                 console.log(res);
                 that.activityLists = res.result;
+                // that.timeFn(that.activityLists.startTime,that.activityLists.entTime);      
                 console.log(that.activityLists);
                 let resCount = res.result.length;
                 console.log("成功加载:" + resCount);
-                this.timeFn(this.res.result.startTime,this.res.result.entTime);
-                // console.log(res);
+                    that.shicha();
+                console.log(that.activityLists);
+                
+
                 if (isInit == true) {
-                    that.activityLists = res;
+                    that.myPlanList = res;
                 } else {
-                    that.activityLists = that.activityLists.concat(res.result);
+                    that.myPlanList = that.myPlanList.concat(res);
                 }
                 that.pageIndex++;
                 // 加载状态结束
@@ -186,6 +116,11 @@ methods:{
                 }
             });
         },
+        shicha:function(){
+            for(var i = 0; i<this.activityLists.length;i++){
+                this.activityLists[i].shijianzt = this.timeFn(this.activityLists[i].startTime,this.activityLists[i].endTime);
+            }
+        },
         timeFn(ktian,etian){
             //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
                 let dateBegin = new Date(ktian);//将-转化为/，使用new Date
@@ -196,24 +131,26 @@ methods:{
                 let weikaishid = Math.floor(weikaishi / (24 * 3600 * 1000));
                 let weijiesud = Math.floor(weijiesu / (24 * 3600 * 1000));
                 
+                let shijian = new Object();
                 // tianshuyu:'',
                 if(weikaishid > 0){
-                    this.xiangchatian = weikaishid;
-                    this.tianshuyu ="活动暂未开始";
-                    this.hdzt = 0
+                    shijian.xiangchatian = weikaishid;
+                    shijian.tianshuyu = "活动暂未开始";
+                    shijian.zt = 0;
                 }else{
                     if(weijiesud < 0){
-                        this.xiangchatian = weijiesud;
-                        this.tianshuyu ="活动已结束";
-                        this.hdzt = 3
+                        shijian.xiangchatian = weijiesud;
+                        shijian.tianshuyu = "活动已结束";
+                        shijian.zt = 2;
                     }else{
-                    this.xiangchatian = weijiesud;
-                    this.tianshuyu = "活动进行中"
-                    this.hdzt = 1
+                        shijian.xiangchatian = weijiesud;
+                        shijian.tianshuyu = "活动进行中";
+                        shijian.zt = 1;
                     }
                 }
                 // console.log(this.xiangchatian);
-                // console.log(this.tianshuyu);
+                console.log(shijian);
+                return shijian;
 
         }
 }

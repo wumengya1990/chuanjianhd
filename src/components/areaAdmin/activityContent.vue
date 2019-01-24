@@ -134,7 +134,7 @@ export default {
             // let token = that.$route.query.token;
             let wzid = that.$route.query.hdid;
             let token = that.$store.state.token;
-             let url = "/api/activity/detail";
+             let url = "/activity/detail";
              let param = { token:token,id:wzid};
              that.$api.post(url, param, res => {
                  that.activityNew = res.result;
@@ -160,7 +160,7 @@ export default {
                 that.pageIndex = 1;
                 that.myPlanList = [];
             }
-            let url = "/api/production/list";
+            let url = "/production/list";
             let param = {token:token};            //获取传参
             let mes = that.receive;
             if (that.$isNull(mes) == false) {
