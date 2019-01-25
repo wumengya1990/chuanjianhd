@@ -38,7 +38,11 @@
                </div>
 
                <div class="xbts">
-                   <van-button round onclick="window.Android.setFlag(2)"><van-icon name="video" /><input type="file" accept="video/*" capture="camera"></van-button>
+                   <!-- <van-button round onclick="window.Android.setFlag(2)"><van-icon name="video" /><input type="file" accept="video/*" capture="camera"></van-button> -->
+                   <van-button round @click="chuandi()"><van-icon name="video" /><input type="file" accept="video/*" capture="camera"></van-button>
+                   <!-- <van-button round onclick="window.Android.getActivityId('123','nihao')"><van-icon name="video" /><input type="file" accept="video/*" capture="camera"></van-button> -->
+                   <!-- <van-button round @click="window.Android.getActivityId($route.query.hdid,$store.state.token)"><van-icon name="video" /><input type="file" accept="video/*" capture="camera"></van-button> -->
+
                </div>
             </van-tab>
         </van-tabs>
@@ -119,7 +123,15 @@ export default {
                 console.log("成功加载推荐活动:" + resCount);
                 that.videoList = res.result;
             });
-        }
+        },
+        chuandi:function(){
+            let that = this;
+            let wzid = that.$route.query.hdid;
+            let token = that.$store.state.token;
+            wzid = wzid.toString(); 
+            token = token.toString();
+            window.Android.getActivityId(wzid,token);
+        },
     }
 }
 </script>

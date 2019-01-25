@@ -23,7 +23,7 @@
                <div class="myActivityList" :style="{height:boxheight}">
                     <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
                      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList" >
-                   <div class="worksBox" v-for="zp in studentworks" >
+                        <div class="worksBox" v-for="zp in studentworks" >
                        <div class="worksBoxVideo">
                        <!-- <video-player class="video-player vjs-custom-skin"
                             ref="videoPlayer"
@@ -175,7 +175,7 @@ export default {
             that.$api.post(url, param, res => {
                 let resCount = res.result.length;
                 console.log("成功加载推荐活动:" + resCount);
-                // console.log(res);
+                console.log(res);
                 if (isInit == true) {
                     that.videoList = res.result;
                 } else {

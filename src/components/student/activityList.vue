@@ -50,7 +50,8 @@ data(){
     }
 },
 mounted(){
-    this.loadList(true)
+    this.loadList(true);
+    this.returnButton();
 },
 methods:{
     intoDetails:function(artid){                //进入到活
@@ -151,7 +152,20 @@ methods:{
                 // console.log(this.xiangchatian);
                 console.log(shijian);
                 return shijian;
-
+        },
+        returnButton () {
+            let vm = this;
+            
+                if (window.history && window.history.pushState) {
+                    $(window).on('popstate', function () {
+                        window.history.pushState('forward', null, '#');
+                        window.history.forward(1);
+                        vm.goToPreview();  //调用方法
+        　　　　　　　　　 alert("不可回退");
+                    });
+                }
+                window.history.pushState('forward', null, '#'); //在IE中必须得有这两行
+                window.history.forward(1);
         }
 }
 }

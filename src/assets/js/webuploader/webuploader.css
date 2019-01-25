@@ -1,0 +1,50 @@
+.webuploader-container {
+	position: relative;
+}
+.webuploader-element-invisible {
+	position: absolute !important;
+	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px,1px,1px,1px);
+}
+.webuploader-pick {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+	background: #00b7ee;
+	/*padding: 10px 15px;*/
+    width:100%;
+	color: #fff;
+	text-align: center;
+	border-radius: 3px;
+	overflow: hidden;
+}
+.webuploader-pick-hover {
+	background: #00a2d4;
+}
+
+.webuploader-pick-disable {
+	opacity: 0.6;
+	pointer-events:none;
+}
+
+.progress{
+    position:absolute;
+    width:100%;
+    left:0;
+    bottom:0;
+height:2px;
+overflow:hidden;
+background:#00a2d4;
+z-index:10000;
+}
+.progress-bar {
+height:100px;
+background:#4cff00;
+}
+.progress span{
+width:1px;
+height:10px;
+border:0;
+border-top:10px solid blue;
+display:block;
+}
