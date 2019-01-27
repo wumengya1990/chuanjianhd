@@ -52,6 +52,7 @@ data(){
 mounted(){
     this.loadList(true);
     this.returnButton();
+    this.fanhui();
 },
 methods:{
     intoDetails:function(artid){                //进入到活
@@ -155,7 +156,6 @@ methods:{
         },
         returnButton () {
             let vm = this;
-            
                 if (window.history && window.history.pushState) {
                     $(window).on('popstate', function () {
                         window.history.pushState('forward', null, '#');
@@ -166,7 +166,23 @@ methods:{
                 }
                 window.history.pushState('forward', null, '#'); //在IE中必须得有这两行
                 window.history.forward(1);
+        },
+        fanhui:function(){
+            function pushHistory() {  
+			  var state = {  
+			    title: "title",  
+			    url: "#"  
+			  };  
+			  window.history.pushState(state, "title", "#");  
+			}
+			pushHistory();
+			window.addEventListener("popstate", function(e) {  
+//			  console.log(e);
+			  window.history.go(-1);
+//			  alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能  
+			}, false);
         }
+        
 }
 }
 </script>

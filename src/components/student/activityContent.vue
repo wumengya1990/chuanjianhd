@@ -125,12 +125,29 @@ export default {
             });
         },
         chuandi:function(){
-            let that = this;
-            let wzid = that.$route.query.hdid;
-            let token = that.$store.state.token;
-            wzid = wzid.toString(); 
-            token = token.toString();
-            window.Android.getActivityId(wzid,token);
+            // let that = this;
+            // let wzid = that.$route.query.hdid;
+            // let token = that.$store.state.token;
+            // wzid = wzid.toString(); 
+            // token = token.toString();
+            // window.Android.getActivityId(wzid,token);
+            
+            var u = navigator.userAgent;
+            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+            var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            // alert('是否是Android：'+isAndroid);
+            // alert('是否是iOS：'+isiOS);
+            if(isAndroid){
+                // alert("我这边是安卓");
+                let that = this;
+                let wzid = that.$route.query.hdid;
+                let token = that.$store.state.token;
+                wzid = wzid.toString(); 
+                token = token.toString();
+                window.Android.getActivityId(wzid,token);
+            }else{
+                // alert("我这边是IOS");
+            }
         },
     }
 }

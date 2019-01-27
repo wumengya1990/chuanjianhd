@@ -69,7 +69,7 @@ data(){
 },
 mounted(){
     this.loadList(true)
-    
+    this.fanhui()
 },
 methods:{
     intoDetails:function(artid){                //进入到活
@@ -168,6 +168,21 @@ methods:{
                 console.log(shijian);
                 return shijian;
 
+        },
+        fanhui:function(){
+            function pushHistory() {  
+			  var state = {  
+			    title: "title",  
+			    url: "#"  
+			  };  
+			  window.history.pushState(state, "title", "#");  
+			}
+			pushHistory();
+			window.addEventListener("popstate", function(e) {  
+//			  console.log(e);
+			  window.history.go(-1);
+//			  alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能  
+			}, false);
         }
 }
 }

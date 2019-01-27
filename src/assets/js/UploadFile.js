@@ -17,7 +17,7 @@ var BindUploaderImg = function (mt) {
     var et = 1;
     uploaderImg = WebUploader.create({
         auto: true,
-        swf: './webuploader/Uploader.swf',
+        swf: '/Scripts/webuploader-0.1.5/Uploader.swf',
         server: '/File/UploadFile',
         pick: { id: '#btnImg', multiple: false },
         formData: { "et": et, "mt": mt },
@@ -38,8 +38,8 @@ var BindUploaderVideo = function (mt, guid) {
     var et = 2;
     uploaderVideo = WebUploader.create({
         auto: true,
-        swf: './webuploader/Uploader.swf',
-        server: '/upload/production/file',
+        swf: '/Scripts/webuploader-0.1.5/Uploader.swf',
+        server: '/File/UploadBigFile',
         pick: { id: '#btnVideo', multiple: false },
         resize: false,
         formData: { "mt": mt, "guid": guid },
@@ -166,7 +166,7 @@ var uploaderObjError = function (e, flType) {
 
 ///上传单一图片（上传头像，海报等）
 var BindUploaderPhoto = function (mt, fucEvent, serverUrl, Id) {
-    var serUrl = "/upload/production/file";
+    var serUrl = "/File/UploadFile";
     var pickId = "#btnUploaderPhoto";
     if (!$.IsNullOrEmpty(Id)) {
         pickId = "#" + Id;
@@ -176,7 +176,7 @@ var BindUploaderPhoto = function (mt, fucEvent, serverUrl, Id) {
     }
     uploaderPhoto = WebUploader.create({
         auto: true,
-        swf: './webuploader/Uploader.swf',
+        swf: '/Scripts/webuploader-0.1.5/Uploader.swf',
         server: serUrl,
         pick: {
             id: pickId, multiple: false
