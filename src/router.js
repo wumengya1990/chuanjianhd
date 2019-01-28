@@ -5,15 +5,24 @@ Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
+  // base: process.env.BASE_URL,
   routes: [
+    {
+      path: '/',
+      redirect: 'links'
+    },
     {
       path: '/ConnectPage',
       name: 'ConnectPage',
       component: () => import('./views/ConnectPage.vue') 
     },
     {
-      path: '/',
+      path: '/errorPage',
+      name: 'errorPage',
+      component: () => import('./views/errorPage.vue') 
+    },
+    {
+      path: '/links',
       name: 'links',
       component: () => import('./views/links.vue')
     },

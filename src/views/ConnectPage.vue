@@ -26,6 +26,7 @@ export default {
         getQueryString: function(name) {
             let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
             let r = window.location.search.substr(1).match(reg);
+            console.log(r);
             if (r != null) return unescape(r[2]);
             return null;
         },
@@ -34,7 +35,9 @@ export default {
             let mySource = that.getQueryString("source");
             let myuId = that.getQueryString("uId");
             let mytoken = that.getQueryString("token");
+            let formUrl = document.referrer;
             let dataList = new Object();
+            console.log(mySource);
             if (!that.$isNull(mySource)) {
                 dataList.source = mySource;
             }
@@ -47,6 +50,7 @@ export default {
             that.formData = dataList;
             let token = dataList.token;
             console.log("开始授权登录");
+            that.$store.commit("saveFromUrl", formUrl); 
 
             if (dataList != null) {
                 let urlp = "login";
@@ -65,19 +69,24 @@ export default {
                                 that.peochoshow =! that.peochoshow;
                             }else{
                                 that.$store.commit("saveToken", res.result.children[0].token); //保存 token
-                                that.$router.push({ path: "/student/sActivityList",query:{token:res.result.children[0].token}});
+                                // that.$router.push({ path: "/student/sActivityList",query:{token:res.result.children[0].token}});
+                                that.$router.push({ path: "/student/sActivityList"});
                             }
                             // that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token}});
 
                         }else if(res.result.role == "Student"){
-                             that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token}});
+                            //  that.$router.push({ path: "/student/sActivityList",query:{token:res.result.token}});
+                             that.$router.push({ path: "/student/sActivityList"});
                         }
                         else if(res.result.role == "Teacher" || res.result.role == "ClassManager"){
-                            that.$router.push({ path: "/teacher/tActivityList",query:{token:res.result.token}});
+                            // that.$router.push({ path: "/teacher/tActivityList",query:{token:res.result.token}});
+                             that.$router.push({ path: "/teacher/tActivityList"});
                         }else if(res.result.role == "SchoolManager"){
-                             that.$router.push({ path: "/schoolAdmin/scActivityList",query:{token:res.result.token}});
+                            //  that.$router.push({ path: "/schoolAdmin/scActivityList",query:{token:res.result.token}});
+                            that.$router.push({ path: "/schoolAdmin/scActivityList"});
                         }else{
-                            that.$router.push({ path: "/areaAdmin/arActivityList",query:{token:res.result.token}});
+                            // that.$router.push({ path: "/areaAdmin/arActivityList",query:{token:res.result.token}});
+                            that.$router.push({ path: "/areaAdmin/arActivityList"});
                         }
                         // if (res.role < 4) {
                         //     that.$router.push({ path: "/myLesson"});

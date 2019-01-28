@@ -5,12 +5,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token:'',
-    userRole:0,
-    currentUser:null,
-    userId:'',
-    islogin:false,
+    token: '',
+    userRole: 0,
+    currentUser: null,
+    userId: '',
+    islogin: false,
     apiUrl: window.localStorage.ApiUrl,
+    fromUrl: ''
   },
   mutations: {
     saveApiUrl(state, data) {
@@ -32,8 +33,13 @@ export default new Vuex.Store({
       state.userId = data;
       window.localStorage.setItem("userId", data);
       console.log("uId写入Store与localStorage中：" + data);
+    },
+    saveFromUrl(state, data) {
+      state.fromUrl = data;
+      window.localStorage.setItem("fromUrl", data);
+      console.log("uId写入Store与localStorage中：" + data);
     }
-
+    
   },
   actions: {
 

@@ -165,7 +165,8 @@ methods:{
                 console.log(shijian);
                 return shijian;
 
-        },
+        }
+        ,
         fanhui:function(){
             function pushHistory() {  
 			  var state = {  
@@ -177,8 +178,8 @@ methods:{
 			pushHistory();
 			window.addEventListener("popstate", function(e) {  
 //			  console.log(e);
-			  window.history.go(-1);
-//			  alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能  
+			//   alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能  
+                 window.location.href= this.$store.state.fromUrl
 			}, false);
         }
 }

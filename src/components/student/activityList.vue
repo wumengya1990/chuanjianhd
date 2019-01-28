@@ -51,7 +51,6 @@ data(){
 },
 mounted(){
     this.loadList(true);
-    this.returnButton();
     this.fanhui();
 },
 methods:{
@@ -153,35 +152,23 @@ methods:{
                 // console.log(this.xiangchatian);
                 console.log(shijian);
                 return shijian;
-        },
-        returnButton () {
-            let vm = this;
-                if (window.history && window.history.pushState) {
-                    $(window).on('popstate', function () {
-                        window.history.pushState('forward', null, '#');
-                        window.history.forward(1);
-                        vm.goToPreview();  //调用方法
-        　　　　　　　　　 alert("不可回退");
-                    });
-                }
-                window.history.pushState('forward', null, '#'); //在IE中必须得有这两行
-                window.history.forward(1);
-        },
-        fanhui:function(){
-            function pushHistory() {  
-			  var state = {  
-			    title: "title",  
-			    url: "#"  
-			  };  
-			  window.history.pushState(state, "title", "#");  
-			}
-			pushHistory();
-			window.addEventListener("popstate", function(e) {  
-//			  console.log(e);
-			  window.history.go(-1);
-//			  alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能  
-			}, false);
         }
+//         ,
+//         fanhui:function(){
+//             function pushHistory() {  
+// 			  var state = {  
+// 			    title: "title",  
+// 			    url: "#"  
+// 			  };  
+// 			  window.history.pushState(state, "title", "#");  
+// 			}
+// 			pushHistory();
+// 			window.addEventListener("popstate", function(e) {  
+// //			  console.log(e);
+// 			   window.history.back(-2);
+// //			  alert("我监听到了浏览器的返回按钮事件啦");//根据自己的需求实现自己的功能  
+// 			}, false);
+//         }
         
 }
 }
