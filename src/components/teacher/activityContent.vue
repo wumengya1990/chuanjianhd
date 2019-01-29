@@ -1,9 +1,9 @@
 <template>
     <!-- <div class="activityContent mianScroll" ref="winHeight"> -->
-        <div class="activityContent mianScroll">
-        <div class="xbts">
+        <div class="activityContent mianScroll" ref="winHeight">
+        <!-- <div class="xbts">
             <a @click="fackpage()">返回</a>
-        </div>
+        </div> -->
 
         <van-tabs v-model="active" swipeable animated>
             <van-tab title="活动须知">
@@ -27,13 +27,18 @@
             <van-tab title="互动参与">
                 
                <div class="myActivityList" :style="{height:boxheight}">
-                   <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
-                     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList" >
+                   <div class="activityListM">
+                   <!-- <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
+                     <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList" > -->
+
                    <div class="worksBox" v-for="zp in studentworks" >
-                       <div class="worksBoxVideo">
+                       <!-- <div class="worksBoxVideo">
                         <video :src="zp.isrc" preload="auto" controls="controls" poster="./../../assets/images/huodongImg.jpg" >
                         Your browser does not support the video tag.
                         </video>
+                        </div> -->
+                        <div class="worksBoxImg">
+                            <img :src="zp.hdimg">
                         </div>
                         <div class="worksBoxAbout">
                             <div class="userImg"><img src="./../../assets/images/userImg.png"></div>
@@ -45,8 +50,11 @@
                             <van-button v-else size="small" type="primary" @click="recommend()">推荐</van-button>
                         </div>
                    </div>
-                    </van-list>
-              </van-pull-refresh>
+
+                   </div>
+
+                    <!-- </van-list>
+              </van-pull-refresh> -->
                </div>
 
             </van-tab>
@@ -113,7 +121,10 @@ export default {
                     hdimg:require('./../../assets/images/huodongImg.jpg'),      //视频封面图
                     isrc:require("./../../assets/video/mov_bbb.mp4"),        //url地址    
                     uploadTime:"2019-01-18",
-                    zpstate:true
+                    zpstate:true,
+                    tcState:false,
+                    scState:false
+
                 },{
                     nianji:"三年级", 
                     banji:"(2)班",
@@ -122,15 +133,19 @@ export default {
                     hdimg:require('./../../assets/images/huodongImg.jpg'),   //视频封面图
                     isrc:"http://www.w3school.com.cn/i/movie.ogg",         //url地址       
                     uploadTime:"2019-01-18",
-                    zpstate:false
+                    zpstate:false,
+                    tcState:false,
+                    scState:false
                 }
             ],
+            studentworksnew:[],
             boxheight:''
         }
     },
     mounted(){
-        this.loadxiangqing()
-        // this.setheight()
+        this.loadxiangqing();
+        this.setheight();
+        this.loadWorkList();
     },
     methods:{
         fackpage:function(){
@@ -158,6 +173,16 @@ export default {
         this.loadList(true);
     },
     //加载活动列表(isInit:是否清空后重新加载数据)
+    loadWorkList:function(){
+        let that = this;
+        let token = that.$store.state.token;
+        let url = "/production/list";
+        let param = {token:token};
+        that.$api.post(url, param, res => {
+            that.studentworksnew = res;
+        });
+
+    },
         loadList: function(isInit) {
             let that = this;
             let token = that.$store.state.token;

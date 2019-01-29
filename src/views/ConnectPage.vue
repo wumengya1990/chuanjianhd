@@ -50,6 +50,7 @@ export default {
             that.formData = dataList;
             let token = dataList.token;
             console.log("开始授权登录");
+            console.log(formUrl);
             that.$store.commit("saveFromUrl", formUrl); 
 
             if (dataList != null) {
