@@ -20,10 +20,10 @@
             </van-tab>
             <van-tab title="互动参与">
                 <div class="myActivityList" :style="{height:boxheight}">
-                 <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
+                 <!-- <van-pull-refresh v-model="isRefresh" @refresh="onRefresh" class="activityListM">
                      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" :offset="100" @load="loadList" >
-              
-                   <div class="worksBox" v-for="zp in studentworks" >
+               -->
+                   <div class="worksBox" v-for="(zp,inedx) in studentworks" :key="inedx">
                        <div class="worksBoxVideo">
                        <!-- <video-player class="video-player vjs-custom-skin"
                             ref="videoPlayer"
@@ -42,17 +42,17 @@
                             <p><em>{{zp.nianji}}{{zp.banji}}</em>{{zp.studentName}}</p>
                             <p>{{zp.schoolName}}</p>
                             </div>
-                            <van-button v-if="zp.zpstate" size="small" type="danger" @click="unrecommend()">取消推荐</van-button>
-                            <van-button v-else size="small" type="primary" @click="recommend()">推荐</van-button>
+                            <van-button v-if="zp.zpstate" size="small" type="danger" @click="unrecommend(zp.id,inedx)">取消推荐</van-button>
+                            <van-button v-else size="small" type="primary" @click="recommend(zp.id,inedx)">推荐</van-button>
                         </div>
                    </div>
 
-                </van-list>
-              </van-pull-refresh>
+                <!-- </van-list>
+              </van-pull-refresh> -->
               </div>
             </van-tab>
         <van-tab title="活动统计">
-            <van-field v-model="screen1" input-align="right" label="年级" placeholder="请选择年级" @click="" />
+            <van-field v-model="screen1" input-align="right" label="年级" placeholder="请选择年级" />
             <van-field v-model="screen2" input-align="right" label="班级" placeholder="请选择班级" />
             <char v-bind:wuping="wupinList" v-bind:shunu="shujuList"></char>
             
@@ -117,6 +117,7 @@ export default {
                     zpstate:false
                 }
             ],
+            studentworksnew:[],
             boxheight:''
         }
     },
@@ -145,55 +146,90 @@ export default {
                  console.log(that.activityNew);
             });
         },
-        onRefresh:function(){
-         this.loading = false;
-        this.loadList(true);
+        loadWorkList:function(){
+        let that = this;
+        let token = that.$store.state.token;
+        let url = "/production/list";
+        let param = {token:token};
+        that.$api.post(url, param, res => {
+            console.log(res);
+            that.studentworksnew = res.result;
+        });
+
     },
-    //加载活动列表(isInit:是否清空后重新加载数据)
-        loadList: function(isInit) {
+    //     onRefresh:function(){
+    //      this.loading = false;
+    //     this.loadList(true);
+    // },
+    // //加载活动列表(isInit:是否清空后重新加载数据)
+    //     loadList: function(isInit) {
+    //         let that = this;
+    //         let token = that.$store.state.token;
+    //         //判断是否正在加载数据
+    //         if (that.isLoading == false) {
+    //             that.isLoading = true;
+    //         } else {
+    //             return false;
+    //         }
+    //         if (isInit == true) {
+    //             that.finished = false;
+    //             that.pageIndex = 1;
+    //             that.myPlanList = [];
+    //         }
+    //         let url = "/production/list";
+    //         let param = {token:token};            //获取传参
+    //         let mes = that.receive;
+    //         if (that.$isNull(mes) == false) {
+    //             for (const key in mes) {
+    //                 if (mes[key] == null || mes[key] == "") {
+    //                     continue;
+    //                 } else if (mes.hasOwnProperty(key)) {
+    //                     param[key] = mes[key];
+    //                 }
+    //             }
+    //         }
+    //         that.$api.post(url, param, res => {
+    //             let resCount = res.result.length;
+    //             console.log("成功加载推荐活动:" + resCount);
+    //             // console.log(res);
+    //             if (isInit == true) {
+    //                 that.videoList = res.result;
+    //             } else {
+    //                 that.videoList = that.myPlanList.concat(res.result);
+    //             }
+    //             that.pageIndex++;
+    //             // 加载状态结束
+    //             that.loading = false;
+    //             that.isLoading = false;
+    //             that.isRefresh = false;
+    //             if (resCount < 10) {
+    //                 that.finished = true;
+    //             }
+    //         });
+    //     },
+        recommend:function(hdID,hdIndex){
             let that = this;
-            let token = that.$store.state.token;
-            //判断是否正在加载数据
-            if (that.isLoading == false) {
-                that.isLoading = true;
-            } else {
-                return false;
-            }
-            if (isInit == true) {
-                that.finished = false;
-                that.pageIndex = 1;
-                that.myPlanList = [];
-            }
-            let url = "/production/list";
-            let param = {token:token};            //获取传参
-            let mes = that.receive;
-            if (that.$isNull(mes) == false) {
-                for (const key in mes) {
-                    if (mes[key] == null || mes[key] == "") {
-                        continue;
-                    } else if (mes.hasOwnProperty(key)) {
-                        param[key] = mes[key];
-                    }
-                }
-            }
-            that.$api.post(url, param, res => {
-                let resCount = res.result.length;
-                console.log("成功加载推荐活动:" + resCount);
-                // console.log(res);
-                if (isInit == true) {
-                    that.videoList = res.result;
-                } else {
-                    that.videoList = that.myPlanList.concat(res.result);
-                }
-                that.pageIndex++;
-                // 加载状态结束
-                that.loading = false;
-                that.isLoading = false;
-                that.isRefresh = false;
-                if (resCount < 10) {
-                    that.finished = true;
-                }
-            });
+             let url = "/activity/detail";
+             let param = { token:token,id:hdID};
+             that.$api.post(url, param, res => {
+                //  that.activityNew = res.result;
+                //  console.log(that.activityNew);
+                  if (res.status == "success"){
+                      that.studentworksnew[hdIndex].schoolRecommendStatus = true;
+                  }
+             });
+        },
+        unrecommend:function(){
+            let that = this;
+             let url = "/activity/detail";
+             let param = { token:token,id:hdID};
+             that.$api.post(url, param, res => {
+                //  that.activityNew = res.result;
+                //  console.log(that.activityNew);
+                  if (res.status == "success"){
+                      that.studentworksnew[hdIndex].schoolRecommendStatus = false;
+                  }
+             });
         }
     }
 }

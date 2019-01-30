@@ -51,7 +51,11 @@ export default {
             let token = dataList.token;
             console.log("开始授权登录");
             console.log(formUrl);
-            that.$store.commit("saveFromUrl", formUrl); 
+            that.$store.commit("saveFromUrl", formUrl);
+            
+            if(that.$store.state.token){
+                window.history.go(-1);
+            } 
 
             if (dataList != null) {
                 let urlp = "login";
@@ -61,7 +65,7 @@ export default {
                     if (res.status == "success") {
                         console.log("授权登录成功");
                         that.$store.commit("saveToken", res.result.token); //保存 token
-                        // that.$store.commit("saveRole", res.result.role); //保存 role
+                        that.$store.commit("saveRole", res.result.role); //保存 role
                         // that.$store.commit("saveUid", res.result.userId);
                         if(res.result.role == "Guardian"){
                             console.log(res.result.children.length);

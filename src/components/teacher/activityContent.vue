@@ -46,8 +46,10 @@
                             <p><em>{{zp.nianji}}{{zp.banji}}</em>{{zp.studentName}}</p>
                             <p>{{zp.schoolName}}</p>
                             </div>
+                            <div style="float:right" v-if="$store.state.userRole">
                             <van-button v-if="zp.zpstate" size="small" type="danger" @click="unrecommend()">取消推荐</van-button>
                             <van-button v-else size="small" type="primary" @click="recommend()">推荐</van-button>
+                            </div>
                         </div>
                    </div>
 
@@ -168,10 +170,6 @@ export default {
                  console.log(that.activityNew);
             });
         },
-        onRefresh:function(){
-         this.loading = false;
-        this.loadList(true);
-    },
     //加载活动列表(isInit:是否清空后重新加载数据)
     loadWorkList:function(){
         let that = this;
@@ -179,54 +177,83 @@ export default {
         let url = "/production/list";
         let param = {token:token};
         that.$api.post(url, param, res => {
-            that.studentworksnew = res;
+            console.log(res);
+            that.studentworksnew = res.result;
         });
 
     },
-        loadList: function(isInit) {
+    //     onRefresh:function(){
+    //      this.loading = false;
+    //     this.loadList(true);
+    // },
+        // loadList: function(isInit) {
+        //     let that = this;
+        //     let token = that.$store.state.token;
+        //     //判断是否正在加载数据
+        //     if (that.isLoading == false) {
+        //         that.isLoading = true;
+        //     } else {
+        //         return false;
+        //     }
+        //     if (isInit == true) {
+        //         that.finished = false;
+        //         that.pageIndex = 1;
+        //         that.myPlanList = [];
+        //     }
+        //     let url = "/production/list";
+        //     let param = {token:token};            //获取传参
+        //     let mes = that.receive;
+        //     if (that.$isNull(mes) == false) {
+        //         for (const key in mes) {
+        //             if (mes[key] == null || mes[key] == "") {
+        //                 continue;
+        //             } else if (mes.hasOwnProperty(key)) {
+        //                 param[key] = mes[key];
+        //             }
+        //         }
+        //     }
+        //     that.$api.post(url, param, res => {
+        //         let resCount = res.result.length;
+        //         console.log("成功加载推荐活动:" + resCount);
+        //         // console.log(res);
+        //         if (isInit == true) {
+        //             that.videoList = res.result;
+        //         } else {
+        //             that.videoList = that.myPlanList.concat(res.result);
+        //         }
+        //         that.pageIndex++;
+        //         // 加载状态结束
+        //         that.loading = false;
+        //         that.isLoading = false;
+        //         that.isRefresh = false;
+        //         if (resCount < 10) {
+        //             that.finished = true;
+        //         }
+        //     });
+        // },
+        recommend:function(hdID,hdIndex){
             let that = this;
-            let token = that.$store.state.token;
-            //判断是否正在加载数据
-            if (that.isLoading == false) {
-                that.isLoading = true;
-            } else {
-                return false;
-            }
-            if (isInit == true) {
-                that.finished = false;
-                that.pageIndex = 1;
-                that.myPlanList = [];
-            }
-            let url = "/production/list";
-            let param = {token:token};            //获取传参
-            let mes = that.receive;
-            if (that.$isNull(mes) == false) {
-                for (const key in mes) {
-                    if (mes[key] == null || mes[key] == "") {
-                        continue;
-                    } else if (mes.hasOwnProperty(key)) {
-                        param[key] = mes[key];
-                    }
-                }
-            }
-            that.$api.post(url, param, res => {
-                let resCount = res.result.length;
-                console.log("成功加载推荐活动:" + resCount);
-                // console.log(res);
-                if (isInit == true) {
-                    that.videoList = res.result;
-                } else {
-                    that.videoList = that.myPlanList.concat(res.result);
-                }
-                that.pageIndex++;
-                // 加载状态结束
-                that.loading = false;
-                that.isLoading = false;
-                that.isRefresh = false;
-                if (resCount < 10) {
-                    that.finished = true;
-                }
-            });
+             let url = "/activity/detail";
+             let param = { token:token,id:hdID};
+             that.$api.post(url, param, res => {
+                //  that.activityNew = res.result;
+                //  console.log(that.activityNew);
+                  if (res.status == "success"){
+                      that.studentworksnew[hdIndex].schoolRecommendStatus = true;
+                  }
+             });
+        },
+        unrecommend:function(){
+            let that = this;
+             let url = "/activity/detail";
+             let param = { token:token,id:hdID};
+             that.$api.post(url, param, res => {
+                //  that.activityNew = res.result;
+                //  console.log(that.activityNew);
+                  if (res.status == "success"){
+                      that.studentworksnew[hdIndex].schoolRecommendStatus = false;
+                  }
+             });
         }
     }
 }
